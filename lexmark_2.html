@@ -1,0 +1,1879 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>LexMark — Marketing Jurídico de Elite</title>
+<meta name="description" content="Plataforma de marketing digital para advogados com IA">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+:root{
+  --bg:#07070d;
+  --s1:#0f0f1a;
+  --s2:#161625;
+  --s3:#1e1e30;
+  --gold:#c8a84b;
+  --gold2:#e6c96a;
+  --goldf:rgba(200,168,75,0.12);
+  --plat:#e2ddd4;
+  --muted:#72728a;
+  --acc:#3d7ab5;
+  --acc2:#6aaad4;
+  --grn:#27ae60;
+  --red:#c0392b;
+  --bdr:rgba(200,168,75,0.18);
+  --r:10px;
+  --font-serif:'Cormorant Garamond',Georgia,serif;
+  --font-sans:'DM Sans',system-ui,sans-serif;
+  --font-mono:'DM Mono',monospace;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px;scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--plat);
+  font-family:var(--font-sans);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* noise */
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9999;
+}
+
+/* ====== LAYOUT ====== */
+.shell{display:flex;min-height:100vh}
+
+/* ====== SIDEBAR ====== */
+.sidebar{
+  width:240px;min-width:240px;
+  background:var(--s1);
+  border-right:1px solid var(--bdr);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;
+  z-index:200;
+  transition:transform .3s ease;
+}
+.sidebar-logo{
+  padding:24px 20px 18px;
+  border-bottom:1px solid var(--bdr);
+  display:flex;align-items:center;gap:10px;
+}
+.sidebar-logo-icon{
+  width:34px;height:34px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;flex-shrink:0;
+}
+.sidebar-logo-text{font-family:var(--font-serif);font-size:19px;color:var(--plat);font-weight:600}
+.sidebar-logo-sub{font-size:9px;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-top:1px}
+
+.sidebar-nav{flex:1;overflow-y:auto;padding:12px 10px}
+.sidebar-nav::-webkit-scrollbar{width:4px}
+.sidebar-nav::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
+
+.nav-sec{
+  font-size:9px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;
+  padding:14px 10px 6px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:9px;
+  padding:9px 10px;border-radius:7px;
+  cursor:pointer;color:var(--muted);font-size:13px;
+  transition:all .18s;margin-bottom:1px;
+  border:1px solid transparent;
+  -webkit-tap-highlight-color:transparent;
+}
+.nav-item:hover{background:var(--goldf);color:var(--plat)}
+.nav-item.on{background:var(--goldf);color:var(--gold);border-color:var(--bdr)}
+.nav-item .ni{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+
+.sidebar-foot{padding:14px;border-top:1px solid var(--bdr)}
+.plan-box{
+  background:linear-gradient(135deg,rgba(200,168,75,.08),rgba(61,122,181,.06));
+  border:1px solid var(--bdr);border-radius:8px;padding:11px 13px;
+}
+.plan-name{color:var(--gold);font-size:12px;font-weight:600;margin-bottom:2px}
+.plan-desc{color:var(--muted);font-size:10px}
+
+/* mobile sidebar toggle */
+.mob-toggle{
+  display:none;
+  position:fixed;top:14px;left:14px;z-index:300;
+  width:36px;height:36px;border-radius:8px;
+  background:var(--s1);border:1px solid var(--bdr);
+  cursor:pointer;align-items:center;justify-content:center;font-size:18px;
+  -webkit-tap-highlight-color:transparent;
+}
+.mob-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:150;
+}
+
+/* ====== MAIN ====== */
+.main{margin-left:240px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+
+/* ====== TOPBAR ====== */
+.topbar{
+  padding:13px 28px;
+  border-bottom:1px solid var(--bdr);
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(7,7,13,.85);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  position:sticky;top:0;z-index:100;
+  gap:12px;
+}
+.page-title{
+  font-family:var(--font-serif);font-size:20px;color:var(--plat);
+  white-space:nowrap;
+}
+.page-title em{color:var(--gold);font-style:italic}
+.topbar-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+
+/* ====== BUTTONS ====== */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:8px 16px;border-radius:7px;font-size:12.5px;
+  font-family:var(--font-sans);font-weight:500;cursor:pointer;
+  border:none;transition:all .18s;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-gold{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#07070d;font-weight:600;
+}
+.btn-gold:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 4px 18px rgba(200,168,75,.28)}
+.btn-ghost{
+  background:transparent;border:1px solid var(--bdr);color:var(--muted);
+}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn-full{width:100%;padding:13px}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+/* live dot */
+.live{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--grn);flex-shrink:0;
+  animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+
+/* ====== CONTENT ====== */
+.content{padding:24px 28px;flex:1}
+
+/* ====== PANELS ====== */
+.panel{display:none;animation:fadeIn .3s ease}
+.panel.on{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ====== CARDS ====== */
+.card{
+  background:var(--s1);border:1px solid var(--bdr);
+  border-radius:var(--r);padding:20px;
+}
+.card-title{
+  font-family:var(--font-serif);font-size:15px;color:var(--plat);
+  margin-bottom:14px;padding-bottom:11px;border-bottom:1px solid var(--bdr);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+}
+.badge{
+  font-family:var(--font-sans);font-size:10px;
+  background:var(--goldf);color:var(--gold);
+  border:1px solid var(--bdr);border-radius:20px;padding:2px 9px;
+}
+
+/* ====== METRICS ====== */
+.metrics-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;margin-bottom:22px;
+}
+.mc{
+  background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);
+  padding:18px;position:relative;overflow:hidden;transition:border-color .2s;
+}
+.mc:hover{border-color:var(--gold)}
+.mc::before{
+  content:'';position:absolute;top:0;right:0;
+  width:50px;height:50px;
+  background:radial-gradient(circle,var(--goldf),transparent);
+  border-radius:50%;transform:translate(16px,-16px);
+}
+.mc-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.mc-val{font-size:26px;font-weight:600;color:var(--plat);font-family:var(--font-mono)}
+.mc-ch{font-size:11px;color:var(--grn);margin-top:3px}
+.mc-ch.dn{color:var(--red)}
+.mc-ico{position:absolute;top:14px;right:14px;font-size:20px;opacity:.4}
+
+/* ====== GRID 2-COL ====== */
+.g2{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;margin-bottom:20px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+
+/* ====== FORM FIELDS ====== */
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}
+.field label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.field input,.field select,.field textarea{
+  background:var(--s2);border:1px solid var(--bdr);border-radius:7px;
+  color:var(--plat);padding:9px 11px;
+  font-family:var(--font-sans);font-size:13px;outline:none;
+  transition:border-color .18s;width:100%;
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold)}
+.field textarea{resize:vertical;min-height:80px;line-height:1.5}
+.field select option{background:#161625}
+
+/* tone chips */
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{
+  padding:5px 11px;border-radius:20px;font-size:11.5px;
+  border:1px solid var(--bdr);cursor:pointer;color:var(--muted);
+  transition:all .15s;-webkit-tap-highlight-color:transparent;
+}
+.chip.on,.chip:hover{border-color:var(--gold);color:var(--gold);background:var(--goldf)}
+
+/* ====== GEN LAYOUT ====== */
+.gen-wrap{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start}
+.gen-out{
+  background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);
+  display:flex;flex-direction:column;min-height:460px;
+}
+.gen-out-head{
+  padding:13px 18px;border-bottom:1px solid var(--bdr);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+}
+.gen-out-body{
+  padding:20px;flex:1;overflow-y:auto;
+  font-size:13.5px;line-height:1.72;color:var(--plat);
+}
+.gen-out-body::-webkit-scrollbar{width:4px}
+.gen-out-body::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
+
+.placeholder-box{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100%;color:var(--muted);text-align:center;gap:10px;padding:30px;min-height:300px;
+}
+.placeholder-box .pi{font-size:36px;opacity:.35}
+.placeholder-box p{font-size:12.5px;line-height:1.6;max-width:260px}
+
+/* loading */
+.loader{
+  display:flex;align-items:center;gap:10px;
+  padding:20px;color:var(--muted);font-size:13px;
+}
+.dots{display:inline-flex;gap:5px;align-items:center}
+.dots span{
+  width:6px;height:6px;border-radius:50%;background:var(--gold);
+  animation:db 1.2s ease-in-out infinite;
+}
+.dots span:nth-child(2){animation-delay:.2s}
+.dots span:nth-child(3){animation-delay:.4s}
+@keyframes db{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+
+/* result */
+.res-body{white-space:pre-wrap;line-height:1.75;font-size:13.5px;color:var(--plat);animation:fadeIn .4s ease}
+.res-body strong{color:var(--gold)}
+.res-body h2,.res-body h3{color:var(--gold2);font-family:var(--font-serif);margin:14px 0 6px}
+
+/* ====== PROGRESS BAR ====== */
+.pb{height:5px;background:var(--s2);border-radius:3px;overflow:hidden;margin-top:5px}
+.pf{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width 1s ease}
+
+/* audience bars */
+.aud-row{margin-bottom:10px}
+.aud-lbl{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.aud-pct{color:var(--gold);font-family:var(--font-mono)}
+
+/* tags */
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.t-reel{background:rgba(61,122,181,.2);color:var(--acc2);border:1px solid rgba(61,122,181,.3)}
+.t-feed{background:rgba(200,168,75,.1);color:var(--gold);border:1px solid var(--bdr)}
+.t-story{background:rgba(192,57,43,.1);color:#e74c3c;border:1px solid rgba(192,57,43,.3)}
+.t-carr{background:rgba(39,174,96,.1);color:#2ecc71;border:1px solid rgba(39,174,96,.3)}
+.t-edu{color:var(--acc2)}
+.t-eng{color:var(--gold)}
+.t-conv{color:var(--grn)}
+.t-rel{color:#e74c3c}
+
+/* hashtags */
+.ht-cloud{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.ht{background:var(--s2);border:1px solid var(--bdr);border-radius:4px;padding:2px 7px;font-size:11px;color:var(--acc2);font-family:var(--font-mono)}
+
+/* strategy cards */
+.strat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:22px}
+.strat-card{
+  background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);
+  padding:20px;cursor:pointer;transition:all .2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.strat-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 6px 24px rgba(200,168,75,.08)}
+.strat-icon{font-size:26px;margin-bottom:10px}
+.strat-title{font-family:var(--font-serif);font-size:15px;color:var(--plat);margin-bottom:5px}
+.strat-desc{font-size:11.5px;color:var(--muted);line-height:1.55}
+
+/* calendar mini */
+.cal-mini{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-dh{font-size:9px;color:var(--muted);text-align:center;padding:3px 0;text-transform:uppercase}
+.cal-d{
+  aspect-ratio:1;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-family:var(--font-mono);
+  cursor:pointer;border:1px solid transparent;transition:all .15s;
+  position:relative;
+}
+.cal-d:hover{border-color:var(--gold)}
+.cal-d.hc{background:var(--goldf);color:var(--gold)}
+.cal-d.td{border-color:var(--gold);background:rgba(200,168,75,.18);color:var(--gold2);font-weight:700}
+.cal-d.em{color:var(--muted)}
+.cal-dot{width:3px;height:3px;border-radius:50%;background:var(--gold);position:absolute;bottom:2px}
+
+/* ideas strip */
+.ideas-strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.ideas-strip::-webkit-scrollbar{height:3px}
+.ideas-strip::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
+.idea-chip{
+  flex-shrink:0;min-width:135px;
+  background:var(--s2);border:1px solid var(--bdr);border-radius:7px;
+  padding:9px 12px;font-size:11.5px;cursor:pointer;transition:all .2s;
+}
+.idea-chip:hover{border-color:var(--gold);background:var(--goldf)}
+.idea-chip .icf{font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
+.idea-chip .ict{color:var(--plat);line-height:1.35}
+
+/* multi posts */
+.multi-list{display:flex;flex-direction:column;gap:16px}
+.multi-item{background:var(--s2);border:1px solid var(--bdr);border-radius:var(--r);padding:16px 18px}
+.multi-item-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.multi-item-title{font-family:var(--font-serif);font-size:14px;color:var(--plat);margin-bottom:8px}
+.multi-item-body{font-size:12.5px;line-height:1.7;color:var(--plat)}
+
+/* cal table */
+.cal-table{width:100%;border-collapse:collapse;font-size:12px}
+.cal-table th{padding:8px 10px;text-align:left;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--bdr)}
+.cal-table td{padding:9px 10px;border-bottom:1px solid rgba(200,168,75,.07);vertical-align:top}
+.cal-table tr:last-child td{border-bottom:none}
+.cal-table tr:hover td{background:var(--goldf)}
+
+/* metrics input */
+.mi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.mi-card{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);padding:17px}
+.mi-card label{display:block;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px}
+.mi-card input{
+  background:var(--s2);border:1px solid var(--bdr);border-radius:6px;
+  color:var(--plat);padding:9px;font-family:var(--font-mono);font-size:15px;font-weight:600;
+  width:100%;outline:none;
+}
+.mi-card input:focus{border-color:var(--gold)}
+.mi-hint{font-size:10px;color:var(--muted);margin-top:5px}
+
+/* intro banner */
+.intro{
+  background:linear-gradient(135deg,rgba(200,168,75,.07),rgba(61,122,181,.07));
+  border:1px solid var(--bdr);border-radius:var(--r);
+  padding:22px 26px;margin-bottom:22px;
+  display:flex;align-items:flex-start;gap:16px;
+}
+.intro-ico{font-size:32px;flex-shrink:0}
+.intro h2{font-family:var(--font-serif);font-size:18px;color:var(--plat);margin-bottom:5px}
+.intro p{color:var(--muted);font-size:12.5px;line-height:1.6;max-width:560px}
+
+/* section header */
+.sh{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.sh-title{font-family:var(--font-serif);font-size:20px;color:var(--plat);font-weight:400}
+.sh-title em{color:var(--gold);font-style:italic}
+
+/* ====== ANÁLISE DE PERFIL SOCIAL ====== */
+.net-tabs{display:flex;gap:6px;margin-bottom:22px;flex-wrap:wrap}
+.net-tab{
+  display:flex;align-items:center;gap:7px;
+  padding:9px 16px;border-radius:8px;font-size:12.5px;font-weight:500;
+  border:1px solid var(--bdr);cursor:pointer;color:var(--muted);
+  transition:all .18s;-webkit-tap-highlight-color:transparent;
+  background:var(--s1);
+}
+.net-tab:hover{border-color:var(--gold);color:var(--plat)}
+.net-tab.on{color:#fff;border-color:transparent}
+.net-tab[data-net="instagram"].on{background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045)}
+.net-tab[data-net="facebook"].on{background:#1877f2}
+.net-tab[data-net="linkedin"].on{background:#0a66c2}
+.net-tab[data-net="tiktok"].on{background:linear-gradient(135deg,#010101,#69c9d0,#ee1d52)}
+.net-tab[data-net="youtube"].on{background:#ff0000}
+.net-tab[data-net="twitter"].on{background:#000}
+.net-tab .net-ico{font-size:16px}
+
+.profile-search-box{
+  background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);
+  padding:22px 24px;margin-bottom:22px;
+}
+.profile-input-row{
+  display:flex;gap:10px;align-items:center;
+  flex-wrap:wrap;
+}
+.profile-input-wrap{
+  flex:1;min-width:220px;position:relative;
+}
+.profile-at{
+  position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  color:var(--gold);font-size:14px;font-weight:600;pointer-events:none;
+}
+.profile-input{
+  width:100%;background:var(--s2);border:1px solid var(--bdr);border-radius:8px;
+  color:var(--plat);padding:11px 12px 11px 26px;
+  font-family:var(--font-sans);font-size:14px;outline:none;
+  transition:border-color .18s;
+}
+.profile-input:focus{border-color:var(--gold)}
+.profile-hint{font-size:11px;color:var(--muted);margin-top:8px}
+
+.profile-extras{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+  margin-top:16px;padding-top:16px;border-top:1px solid var(--bdr);
+}
+
+/* score ring */
+.score-section{
+  display:grid;grid-template-columns:180px 1fr;gap:24px;
+  margin-bottom:22px;align-items:start;
+}
+.score-ring-wrap{
+  background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);
+  padding:22px;display:flex;flex-direction:column;align-items:center;gap:10px;
+}
+.score-ring{position:relative;width:120px;height:120px}
+.score-ring svg{width:120px;height:120px;transform:rotate(-90deg)}
+.score-ring .ring-bg{fill:none;stroke:var(--s3);stroke-width:10}
+.score-ring .ring-fill{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset 1.2s ease}
+.score-ring .ring-text{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+.score-num{font-family:var(--font-mono);font-size:28px;font-weight:600;color:var(--gold)}
+.score-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.score-label{font-family:var(--font-serif);font-size:14px;color:var(--plat);text-align:center}
+.score-badge{
+  font-size:11px;padding:3px 10px;border-radius:20px;
+  background:var(--goldf);color:var(--gold);border:1px solid var(--bdr);
+}
+
+.score-pillars{
+  background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);padding:20px;
+}
+.pillar-row{margin-bottom:13px}
+.pillar-row:last-child{margin-bottom:0}
+.pillar-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.pillar-name{font-size:12px;color:var(--plat)}
+.pillar-score{font-family:var(--font-mono);font-size:12px;color:var(--gold)}
+.pillar-bar{height:6px;background:var(--s2);border-radius:3px;overflow:hidden}
+.pillar-fill{height:100%;border-radius:3px;transition:width 1s ease}
+
+/* result blocks */
+.analysis-blocks{display:flex;flex-direction:column;gap:14px}
+.ablock{
+  background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);
+  overflow:hidden;
+}
+.ablock-head{
+  padding:12px 18px;border-bottom:1px solid var(--bdr);
+  display:flex;align-items:center;gap:9px;cursor:pointer;
+  transition:background .15s;
+}
+.ablock-head:hover{background:var(--goldf)}
+.ablock-head-ico{font-size:18px}
+.ablock-head-title{font-family:var(--font-serif);font-size:14px;color:var(--plat);flex:1}
+.ablock-head-arrow{color:var(--muted);font-size:12px;transition:transform .2s}
+.ablock.open .ablock-head-arrow{transform:rotate(180deg)}
+.ablock-body{display:none;padding:16px 18px}
+.ablock.open .ablock-body{display:block;animation:fadeIn .2s ease}
+.ablock-body .res-body{font-size:13px}
+
+/* comparison table */
+.comp-net-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;
+  margin-bottom:20px;
+}
+.comp-net-card{
+  background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);
+  padding:14px;cursor:pointer;transition:all .2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.comp-net-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.comp-net-card .cni{font-size:24px;margin-bottom:6px}
+.comp-net-card .cnn{font-size:13px;color:var(--plat);font-weight:500;margin-bottom:3px}
+.comp-net-card .cnd{font-size:11px;color:var(--muted);line-height:1.4}
+
+@media(max-width:700px){
+  .score-section{grid-template-columns:1fr}
+  .profile-extras{grid-template-columns:1fr 1fr}
+  .net-tabs{gap:4px}
+  .net-tab{padding:7px 11px;font-size:11px}
+}
+@media(max-width:420px){
+  .profile-extras{grid-template-columns:1fr}
+}
+
+/* ====== LEXIA (publicitária virtual) ====== */
+#lexia-btn{
+  position:fixed;bottom:22px;right:22px;z-index:500;
+  width:58px;height:58px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;box-shadow:0 6px 28px rgba(200,168,75,.4);
+  transition:all .2s;-webkit-tap-highlight-color:transparent;
+}
+#lexia-btn:hover{transform:scale(1.08);box-shadow:0 8px 36px rgba(200,168,75,.55)}
+#lexia-btn .lexia-notif{
+  position:absolute;top:2px;right:2px;
+  width:14px;height:14px;border-radius:50%;
+  background:var(--red);border:2px solid var(--bg);
+  font-size:8px;color:#fff;display:flex;align-items:center;justify-content:center;
+}
+
+#lexia-panel{
+  position:fixed;bottom:90px;right:22px;z-index:499;
+  width:380px;max-width:calc(100vw - 28px);
+  background:var(--s1);border:1px solid var(--bdr);border-radius:16px;
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
+  display:none;flex-direction:column;
+  max-height:calc(100vh - 110px);
+  overflow:hidden;
+}
+#lexia-panel.open{display:flex;animation:slideUp .25s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+.lexia-head{
+  padding:14px 18px;border-bottom:1px solid var(--bdr);
+  display:flex;align-items:center;gap:11px;
+}
+.lexia-avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;
+}
+.lexia-name{font-family:var(--font-serif);font-size:15px;color:var(--plat);font-weight:600}
+.lexia-role{font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.1em}
+.lexia-close{margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;padding:2px;line-height:1}
+
+.lexia-msgs{
+  flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;
+  min-height:200px;
+}
+.lexia-msgs::-webkit-scrollbar{width:3px}
+.lexia-msgs::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
+
+.msg{display:flex;gap:8px;align-items:flex-start;animation:fadeIn .25s ease}
+.msg.user{flex-direction:row-reverse}
+.msg-bubble{
+  max-width:82%;padding:10px 13px;border-radius:12px;font-size:12.5px;line-height:1.6;
+}
+.msg.ai .msg-bubble{
+  background:var(--s2);border:1px solid var(--bdr);color:var(--plat);
+  border-top-left-radius:3px;
+}
+.msg.user .msg-bubble{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#07070d;font-weight:500;border-top-right-radius:3px;
+}
+.msg-av{
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;flex-shrink:0;
+}
+.msg.ai .msg-av{background:linear-gradient(135deg,var(--gold),var(--gold2))}
+.msg.user .msg-av{background:var(--s3)}
+
+.lexia-quick{
+  padding:8px 14px;border-top:1px solid var(--bdr);
+  display:flex;gap:6px;overflow-x:auto;flex-shrink:0;
+}
+.lexia-quick::-webkit-scrollbar{height:0}
+.q-chip{
+  flex-shrink:0;padding:5px 11px;border-radius:20px;font-size:11px;
+  border:1px solid var(--bdr);color:var(--muted);cursor:pointer;
+  transition:all .15s;white-space:nowrap;
+  -webkit-tap-highlight-color:transparent;
+}
+.q-chip:hover,.q-chip:active{border-color:var(--gold);color:var(--gold);background:var(--goldf)}
+
+.lexia-input-row{
+  padding:12px 14px;border-top:1px solid var(--bdr);
+  display:flex;gap:8px;align-items:flex-end;
+}
+.lexia-input{
+  flex:1;background:var(--s2);border:1px solid var(--bdr);border-radius:8px;
+  color:var(--plat);padding:9px 12px;font-family:var(--font-sans);font-size:13px;
+  outline:none;resize:none;max-height:100px;line-height:1.4;
+}
+.lexia-input:focus{border-color:var(--gold)}
+.lexia-send{
+  width:36px;height:36px;border-radius:8px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  border:none;cursor:pointer;font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* news section */
+.news-list{display:flex;flex-direction:column;gap:10px}
+.news-item{
+  background:var(--s2);border:1px solid var(--bdr);border-radius:8px;
+  padding:12px 15px;display:flex;gap:12px;align-items:flex-start;
+}
+.news-ico{font-size:20px;flex-shrink:0;margin-top:2px}
+.news-tag{font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
+.news-title{font-size:13px;color:var(--plat);line-height:1.4;margin-bottom:4px}
+.news-meta{font-size:10.5px;color:var(--muted)}
+
+/* ====== RESPONSIVE ====== */
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.mob-open{transform:translateX(0)}
+  .main{margin-left:0}
+  .mob-toggle{display:flex}
+  .mob-overlay.on{display:block}
+  .topbar{padding:12px 16px 12px 58px}
+  .content{padding:18px 16px}
+  .metrics-grid{grid-template-columns:repeat(2,1fr)}
+  .g2{grid-template-columns:1fr}
+  .g3{grid-template-columns:repeat(2,1fr)}
+  .gen-wrap{grid-template-columns:1fr}
+  .strat-grid{grid-template-columns:1fr}
+  .mi-grid{grid-template-columns:repeat(2,1fr)}
+  #lexia-panel{width:calc(100vw - 28px);right:14px}
+}
+@media(max-width:540px){
+  .metrics-grid{grid-template-columns:1fr 1fr}
+  .mi-grid{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:1fr}
+  .page-title{font-size:16px}
+  .mc-val{font-size:22px}
+}
+</style>
+</head>
+<body>
+
+<!-- mobile overlay -->
+<div class="mob-overlay" id="mobOverlay" onclick="closeSidebar()"></div>
+<!-- mobile toggle -->
+<div class="mob-toggle" id="mobToggle" onclick="openSidebar()">☰</div>
+
+<div class="shell">
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon">⚖️</div>
+    <div>
+      <div class="sidebar-logo-text">LexMark</div>
+      <div class="sidebar-logo-sub">Marketing Jurídico</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-sec">Visão Geral</div>
+    <div class="nav-item on"  id="ni-dashboard"  onclick="nav('dashboard')"><span class="ni">📊</span>Dashboard</div>
+    <div class="nav-item"     id="ni-noticias"   onclick="nav('noticias')"><span class="ni">📰</span>Notícias Jurídicas</div>
+    <div class="nav-item"     id="ni-analise"    onclick="nav('analise')"><span class="ni">🔍</span>Análise de Métricas</div>
+    <div class="nav-item"     id="ni-perfil"     onclick="nav('perfil')"><span class="ni">🔎</span>Análise de Perfil Social</div>
+
+    <div class="nav-sec">Conteúdo</div>
+    <div class="nav-item"     id="ni-gerador"    onclick="nav('gerador')"><span class="ni">✨</span>Gerador de Conteúdo</div>
+    <div class="nav-item"     id="ni-roteiro"    onclick="nav('roteiro')"><span class="ni">🎬</span>Roteiro para Reels</div>
+    <div class="nav-item"     id="ni-massa"      onclick="nav('massa')"><span class="ni">🚀</span>Geração em Massa</div>
+    <div class="nav-item"     id="ni-legenda"    onclick="nav('legenda')"><span class="ni">📝</span>Legendas Inteligentes</div>
+
+    <div class="nav-sec">Estratégia</div>
+    <div class="nav-item"     id="ni-estrategia" onclick="nav('estrategia')"><span class="ni">🎯</span>Estratégia de Crescimento</div>
+    <div class="nav-item"     id="ni-publico"    onclick="nav('publico')"><span class="ni">👥</span>Público-Alvo</div>
+    <div class="nav-item"     id="ni-selling"    onclick="nav('selling')"><span class="ni">💼</span>Social Selling</div>
+    <div class="nav-item"     id="ni-calendario" onclick="nav('calendario')"><span class="ni">📅</span>Calendário Editorial</div>
+  </nav>
+  <div class="sidebar-foot">
+    <div class="plan-box">
+      <div class="plan-name">⚡ LexMark Elite</div>
+      <div class="plan-desc">Geração ilimitada · IA ativa</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<main class="main">
+  <div class="topbar">
+    <div class="page-title" id="pageTitle">Dashboard <em>Executivo</em></div>
+    <div class="topbar-right">
+      <div class="live"><div class="live-dot"></div><span id="liveLabel">IA Ativa</span></div>
+      <button class="btn btn-gold" onclick="nav('gerador')">+ Criar</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ======= DASHBOARD ======= -->
+    <div class="panel on" id="p-dashboard">
+      <div class="metrics-grid">
+        <div class="mc"><div class="mc-label">Seguidores</div><div class="mc-val">12.4k</div><div class="mc-ch">↑ +847 este mês</div><div class="mc-ico">👥</div></div>
+        <div class="mc"><div class="mc-label">Engajamento</div><div class="mc-val">6.8%</div><div class="mc-ch">↑ +1.2%</div><div class="mc-ico">💬</div></div>
+        <div class="mc"><div class="mc-label">Alcance Mensal</div><div class="mc-val">89k</div><div class="mc-ch">↑ +22%</div><div class="mc-ico">📡</div></div>
+        <div class="mc"><div class="mc-label">Posts Gerados</div><div class="mc-val">247</div><div class="mc-ch">↑ +38 semana</div><div class="mc-ico">📄</div></div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="card-title">Calendário Editorial — Abril 2025 <span class="badge">14 posts</span></div>
+          <div class="cal-mini" id="calMini"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Perfil do Público</div>
+          <div id="audBars"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Ideias em Destaque <button class="btn btn-ghost" style="font-size:11px" onclick="nav('gerador')">Ver todas →</button></div>
+        <div class="ideas-strip" id="ideasStrip"></div>
+      </div>
+    </div>
+
+    <!-- ======= NOTÍCIAS ======= -->
+    <div class="panel" id="p-noticias">
+      <div class="sh"><div class="sh-title">Notícias <em>Jurídicas</em></div></div>
+      <div class="intro">
+        <div class="intro-ico">📰</div>
+        <div>
+          <h2>Notícias em Tempo Real para Conteúdo</h2>
+          <p>A Lexia busca notícias relevantes do direito para você transformar em conteúdo de alto impacto nas redes sociais.</p>
+        </div>
+      </div>
+      <div class="field" style="max-width:420px;margin-bottom:16px">
+        <label>Área do Direito</label>
+        <select id="newsArea">
+          <option>Direito Trabalhista</option><option>Direito de Família</option>
+          <option>Direito do Consumidor</option><option>Direito Penal</option>
+          <option>Direito Empresarial</option><option>Direito Tributário</option>
+          <option>Direito Previdenciário</option><option>STF e Jurisprudência</option>
+        </select>
+      </div>
+      <button class="btn btn-gold" onclick="buscarNoticias()" style="margin-bottom:22px">📰 Buscar Notícias + Sugestões de Conteúdo</button>
+      <div id="newsOutput"></div>
+    </div>
+
+    <!-- ======= GERADOR ======= -->
+    <div class="panel" id="p-gerador">
+      <div class="sh"><div class="sh-title">Gerador de <em>Conteúdo</em></div></div>
+      <div class="gen-wrap">
+        <div class="card" style="display:flex;flex-direction:column;gap:0">
+          <div class="field"><label>Área do Direito</label>
+            <select id="gArea">
+              <option value="trabalhista">Trabalhista</option><option value="familia">Família</option>
+              <option value="consumidor">Consumidor</option><option value="penal">Penal</option>
+              <option value="civil">Civil</option><option value="empresarial">Empresarial</option>
+              <option value="previdenciario">Previdenciário</option><option value="tributario">Tributário</option>
+              <option value="imobiliario">Imobiliário</option><option value="constitucional">Constitucional</option>
+            </select>
+          </div>
+          <div class="field"><label>Formato</label>
+            <select id="gFormato">
+              <option value="feed">Carrossel educativo (Feed)</option>
+              <option value="story">Sequência de Stories</option>
+              <option value="legenda">Legenda completa</option>
+              <option value="dica">Dica Rápida</option>
+              <option value="mito">Mito vs. Verdade</option>
+              <option value="lista">Lista com dados</option>
+              <option value="cta">Post com CTA forte</option>
+              <option value="curiosidade">Curiosidade Jurídica</option>
+              <option value="poll">Post interativo / enquete</option>
+            </select>
+          </div>
+          <div class="field"><label>Tema / Assunto</label>
+            <input type="text" id="gTema" placeholder="Ex: rescisão indireta, guarda compartilhada...">
+          </div>
+          <div class="field"><label>Tom de Voz</label>
+            <div class="chips" id="gTones">
+              <div class="chip on" onclick="pickTone(this)">Educativo</div>
+              <div class="chip" onclick="pickTone(this)">Empático</div>
+              <div class="chip" onclick="pickTone(this)">Autoridade</div>
+              <div class="chip" onclick="pickTone(this)">Urgente</div>
+              <div class="chip" onclick="pickTone(this)">Inspirador</div>
+              <div class="chip" onclick="pickTone(this)">Direto</div>
+            </div>
+          </div>
+          <div class="field"><label>Público-alvo</label>
+            <input type="text" id="gPublico" placeholder="Ex: trabalhadores CLT, MEIs...">
+          </div>
+          <button class="btn btn-gold btn-full" onclick="gerarConteudo()">✨ Gerar com IA</button>
+        </div>
+        <div class="gen-out">
+          <div class="gen-out-head">
+            <span style="font-size:12px;color:var(--muted)">Resultado</span>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-ghost" id="gCopyBtn" onclick="copyGen()" style="display:none;font-size:11px">📋 Copiar</button>
+              <button class="btn btn-ghost" id="gRegenBtn" onclick="gerarConteudo()" style="display:none;font-size:11px">🔄 Regerar</button>
+            </div>
+          </div>
+          <div class="gen-out-body" id="gOut">
+            <div class="placeholder-box"><div class="pi">⚖️</div><p>Configure e clique em <strong>Gerar com IA</strong> para criar sua publicação.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= ROTEIRO ======= -->
+    <div class="panel" id="p-roteiro">
+      <div class="sh"><div class="sh-title">Roteiro para <em>Reels</em></div></div>
+      <div class="gen-wrap">
+        <div class="card" style="display:flex;flex-direction:column;gap:0">
+          <div class="field"><label>Área</label>
+            <select id="rArea">
+              <option>Trabalhista</option><option>Família</option><option>Consumidor</option>
+              <option>Penal</option><option>Civil</option><option>Empresarial</option><option>Previdenciário</option>
+            </select>
+          </div>
+          <div class="field"><label>Tema do Vídeo</label>
+            <input type="text" id="rTema" placeholder="Ex: 5 erros que custam seu processo">
+          </div>
+          <div class="field"><label>Duração</label>
+            <select id="rDur">
+              <option value="15">15 segundos — gancho rápido</option>
+              <option value="30">30 segundos — didático</option>
+              <option value="60" selected>60 segundos — completo</option>
+              <option value="90">90 segundos — aprofundado</option>
+            </select>
+          </div>
+          <div class="field"><label>Estilo</label>
+            <select id="rEstilo">
+              <option>Talking head (falando p/ câmera)</option>
+              <option>Narração com texto na tela</option>
+              <option>Storytelling com caso real</option>
+              <option>Lista com revelações progressivas</option>
+              <option>Pergunta polêmica + resposta</option>
+            </select>
+          </div>
+          <div class="field"><label>CTA Final</label>
+            <select id="rCTA">
+              <option>Salva esse vídeo</option><option>Manda pra quem precisa</option>
+              <option>Comenta sua dúvida</option><option>Me chama no direct</option>
+              <option>Consulte um advogado</option>
+            </select>
+          </div>
+          <button class="btn btn-gold btn-full" onclick="gerarRoteiro()">🎬 Gerar Roteiro</button>
+        </div>
+        <div class="gen-out">
+          <div class="gen-out-head">
+            <span style="font-size:12px;color:var(--muted)">Roteiro Completo</span>
+            <button class="btn btn-ghost" id="rCopyBtn" onclick="copyRot()" style="display:none;font-size:11px">📋 Copiar</button>
+          </div>
+          <div class="gen-out-body" id="rOut">
+            <div class="placeholder-box"><div class="pi">🎬</div><p>Preencha os campos e gere um roteiro pronto para gravar.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= LEGENDA ======= -->
+    <div class="panel" id="p-legenda">
+      <div class="sh"><div class="sh-title">Legendas <em>Inteligentes</em></div></div>
+      <div class="gen-wrap">
+        <div class="card" style="display:flex;flex-direction:column;gap:0">
+          <div class="field"><label>Área</label>
+            <select id="lArea">
+              <option>Trabalhista</option><option>Família</option><option>Consumidor</option>
+              <option>Penal</option><option>Civil</option><option>Empresarial</option>
+            </select>
+          </div>
+          <div class="field"><label>Sobre o que é o post?</label>
+            <textarea id="lTema" placeholder="Descreva brevemente o conteúdo do post ou foto..."></textarea>
+          </div>
+          <div class="field"><label>Estilo da legenda</label>
+            <select id="lEstilo">
+              <option>Educativa e didática</option>
+              <option>Emotiva e empática</option>
+              <option>Direta e impactante</option>
+              <option>Storytelling (história)</option>
+              <option>Polêmica que gera debate</option>
+              <option>Com pergunta interativa</option>
+            </select>
+          </div>
+          <div class="field"><label>Tamanho</label>
+            <select id="lTamanho">
+              <option>Curta (até 150 palavras)</option>
+              <option value="med" selected>Média (150–300 palavras)</option>
+              <option>Longa (300–500 palavras)</option>
+            </select>
+          </div>
+          <button class="btn btn-gold btn-full" onclick="gerarLegenda()">📝 Gerar Legenda</button>
+        </div>
+        <div class="gen-out">
+          <div class="gen-out-head">
+            <span style="font-size:12px;color:var(--muted)">Legenda Gerada</span>
+            <button class="btn btn-ghost" id="lCopyBtn" onclick="copyLeg()" style="display:none;font-size:11px">📋 Copiar</button>
+          </div>
+          <div class="gen-out-body" id="lOut">
+            <div class="placeholder-box"><div class="pi">📝</div><p>Descreva o post e gere uma legenda de alto engajamento.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= MASSA ======= -->
+    <div class="panel" id="p-massa">
+      <div class="sh"><div class="sh-title">Geração em <em>Massa</em></div></div>
+      <div class="intro">
+        <div class="intro-ico">🚀</div>
+        <div><h2>Semanas de conteúdo em minutos</h2><p>Configure área, quantidade e formatos. A IA cria múltiplas peças prontas para agendar.</p></div>
+      </div>
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-title">Configurar Lote</div>
+        <div class="g3" style="margin-bottom:14px">
+          <div class="field"><label>Área Principal</label>
+            <select id="mArea"><option>Trabalhista</option><option>Família</option><option>Consumidor</option><option>Penal</option><option>Empresarial</option><option>Mix de Áreas</option></select>
+          </div>
+          <div class="field"><label>Quantidade</label>
+            <select id="mQtd"><option value="3">3 posts (3 dias)</option><option value="5" selected>5 posts (1 semana)</option><option value="7">7 posts (1 semana +)</option></select>
+          </div>
+          <div class="field"><label>Formatos</label>
+            <select id="mFmt"><option>Todos os formatos</option><option>Somente Feed</option><option>Somente Stories</option><option>Feed + Reel</option></select>
+          </div>
+        </div>
+        <button class="btn btn-gold" onclick="gerarMassa()">🚀 Gerar Lote com IA</button>
+      </div>
+      <div id="mOut"></div>
+    </div>
+
+    <!-- ======= ANÁLISE ======= -->
+    <div class="panel" id="p-analise">
+      <div class="sh"><div class="sh-title">Análise de <em>Métricas</em></div></div>
+      <div class="intro">
+        <div class="intro-ico">🔍</div>
+        <div><h2>Diagnóstico Estratégico com IA</h2><p>Insira seus números reais e receba análise com recomendações personalizadas.</p></div>
+      </div>
+      <div class="mi-grid">
+        <div class="mi-card"><label>Seguidores</label><input type="number" id="mSeg" placeholder="3200"><div class="mi-hint">Total atual</div></div>
+        <div class="mi-card"><label>Crescimento/mês (%)</label><input type="number" id="mCres" placeholder="5.2" step="0.1"><div class="mi-hint">% crescimento mensal</div></div>
+        <div class="mi-card"><label>Engajamento (%)</label><input type="number" id="mEng" placeholder="3.5" step="0.1"><div class="mi-hint">Likes+comentários/seg.</div></div>
+        <div class="mi-card"><label>Posts / semana</label><input type="number" id="mPosts" placeholder="3"><div class="mi-hint">Frequência semanal</div></div>
+        <div class="mi-card"><label>Alcance médio/post</label><input type="number" id="mAlc" placeholder="850"><div class="mi-hint">Pessoas alcançadas</div></div>
+        <div class="mi-card"><label>Área de atuação</label><input type="text" id="mAreaTxt" placeholder="Ex: Trabalhista"></div>
+      </div>
+      <button class="btn btn-gold" onclick="analisarMetricas()" style="margin-bottom:22px">🔍 Analisar com IA</button>
+      <div id="aOut"></div>
+    </div>
+
+    <!-- ======= ESTRATÉGIA ======= -->
+    <div class="panel" id="p-estrategia">
+      <div class="sh"><div class="sh-title">Estratégia de <em>Crescimento</em></div></div>
+      <div class="field" style="max-width:480px;margin-bottom:20px">
+        <label>Descreva seu perfil</label>
+        <input type="text" id="ePerfil" placeholder="Ex: advogada trabalhista, OAB/SP, 500 seguidores">
+      </div>
+      <div class="strat-grid">
+        <div class="strat-card" onclick="gerarEstrategia('crescimento')"><div class="strat-icon">📈</div><div class="strat-title">Plano de Crescimento</div><div class="strat-desc">Estratégia mês a mês para dobrar seguidores com consistência.</div></div>
+        <div class="strat-card" onclick="gerarEstrategia('engajamento')"><div class="strat-icon">💬</div><div class="strat-title">Aumento de Engajamento</div><div class="strat-desc">Táticas baseadas em dados para comentários, saves e shares.</div></div>
+        <div class="strat-card" onclick="gerarEstrategia('autoridade')"><div class="strat-icon">⚖️</div><div class="strat-title">Posicionamento como Referência</div><div class="strat-desc">Como se tornar o advogado de referência na sua especialidade.</div></div>
+        <div class="strat-card" onclick="gerarEstrategia('captacao')"><div class="strat-icon">🎯</div><div class="strat-title">Captação de Clientes</div><div class="strat-desc">Funil de conteúdo para converter seguidores em clientes.</div></div>
+      </div>
+      <div id="eOut"></div>
+    </div>
+
+    <!-- ======= PÚBLICO ======= -->
+    <div class="panel" id="p-publico">
+      <div class="sh"><div class="sh-title">Análise de <em>Público-Alvo</em></div></div>
+      <div class="card" style="max-width:520px;margin-bottom:20px">
+        <div class="card-title">Perfil do Escritório</div>
+        <div class="field"><label>Área de atuação</label>
+          <select id="pArea"><option>Trabalhista</option><option>Família</option><option>Consumidor</option><option>Penal</option><option>Empresarial</option><option>Civil Geral</option></select>
+        </div>
+        <div class="field"><label>Cidade / Região</label>
+          <input type="text" id="pCidade" placeholder="Ex: São Paulo, interior de MG...">
+        </div>
+        <button class="btn btn-gold" onclick="analisarPublico()">👥 Analisar com IA</button>
+      </div>
+      <div id="pOut"></div>
+    </div>
+
+    <!-- ======= SOCIAL SELLING ======= -->
+    <div class="panel" id="p-selling">
+      <div class="sh"><div class="sh-title">Social <em>Selling</em></div></div>
+      <div class="intro">
+        <div class="intro-ico">💼</div>
+        <div><h2>Técnicas de Social Selling Jurídico</h2><p>Estratégias para construir relacionamentos e converter seguidores em clientes de forma ética e eficaz.</p></div>
+      </div>
+      <div class="field" style="max-width:480px;margin-bottom:16px">
+        <label>Área e situação atual</label>
+        <textarea id="ssCtx" placeholder="Ex: advogado trabalhista com 2.000 seguidores, recebo poucas consultas pelo Instagram..." style="min-height:70px"></textarea>
+      </div>
+      <button class="btn btn-gold" onclick="gerarSelling()" style="margin-bottom:22px">💼 Gerar Estratégia de Social Selling</button>
+      <div id="ssOut"></div>
+    </div>
+
+    <!-- ======= CALENDÁRIO ======= -->
+    <div class="panel" id="p-calendario">
+      <div class="sh"><div class="sh-title">Calendário <em>Editorial</em></div></div>
+      <div class="card" style="max-width:520px;margin-bottom:20px">
+        <div class="card-title">Gerar Calendário</div>
+        <div class="g3" style="margin-bottom:14px">
+          <div class="field"><label>Área</label>
+            <select id="cArea"><option>Trabalhista</option><option>Família</option><option>Consumidor</option><option>Penal</option><option>Empresarial</option><option>Mix</option></select>
+          </div>
+          <div class="field"><label>Período</label>
+            <select id="cPer"><option value="7">7 dias</option><option value="15">15 dias</option><option value="30" selected>30 dias</option></select>
+          </div>
+          <div class="field"><label>Frequência</label>
+            <select id="cFreq"><option>3x / semana</option><option>5x / semana</option><option>Diário</option></select>
+          </div>
+        </div>
+        <button class="btn btn-gold" onclick="gerarCalendario()">📅 Gerar Calendário</button>
+      </div>
+      <div id="cOut"></div>
+    </div>
+
+  </div><!-- /content -->
+
+    <!-- ======= ANÁLISE DE PERFIL SOCIAL ======= -->
+    <div class="panel" id="p-perfil">
+      <div class="sh"><div class="sh-title">Análise de <em>Perfil Social</em></div></div>
+
+      <div class="intro">
+        <div class="intro-ico">🔎</div>
+        <div>
+          <h2>Auditoria Completa de Perfil com IA</h2>
+          <p>Digite o @ de qualquer perfil jurídico no Instagram, Facebook, LinkedIn, TikTok, YouTube ou X/Twitter. A Lexia faz uma auditoria profunda com pontuação, diagnóstico e plano de ação personalizado.</p>
+        </div>
+      </div>
+
+      <!-- Seletor de rede -->
+      <div class="net-tabs" id="netTabs">
+        <div class="net-tab on" data-net="instagram" onclick="selectNet(this)"><span class="net-ico">📸</span>Instagram</div>
+        <div class="net-tab" data-net="facebook" onclick="selectNet(this)"><span class="net-ico">👤</span>Facebook</div>
+        <div class="net-tab" data-net="linkedin" onclick="selectNet(this)"><span class="net-ico">💼</span>LinkedIn</div>
+        <div class="net-tab" data-net="tiktok" onclick="selectNet(this)"><span class="net-ico">🎵</span>TikTok</div>
+        <div class="net-tab" data-net="youtube" onclick="selectNet(this)"><span class="net-ico">▶️</span>YouTube</div>
+        <div class="net-tab" data-net="twitter" onclick="selectNet(this)"><span class="net-ico">✖</span>X / Twitter</div>
+      </div>
+
+      <!-- Formulário de busca -->
+      <div class="profile-search-box">
+        <div class="profile-input-row">
+          <div class="profile-input-wrap">
+            <span class="profile-at">@</span>
+            <input class="profile-input" type="text" id="profileHandle"
+              placeholder="nomeDoPerfil"
+              onkeydown="if(event.key==='Enter') analisarPerfil()">
+          </div>
+          <button class="btn btn-gold" onclick="analisarPerfil()" style="padding:11px 22px;font-size:13px">
+            🔎 Analisar Perfil
+          </button>
+        </div>
+        <div class="profile-hint">💡 Digite o nome de usuário sem o @ e pressione Analisar. A IA realiza uma auditoria simulada baseada no perfil informado.</div>
+
+        <!-- Informações adicionais opcionais -->
+        <div class="profile-extras">
+          <div class="field" style="margin-bottom:0">
+            <label>Seguidores (opcional)</label>
+            <input type="text" id="pfSeg" placeholder="Ex: 3.200">
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Área de atuação (opcional)</label>
+            <input type="text" id="pfArea" placeholder="Ex: Trabalhista">
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Cidade (opcional)</label>
+            <input type="text" id="pfCidade" placeholder="Ex: São Paulo">
+          </div>
+        </div>
+      </div>
+
+      <!-- Resultado da análise -->
+      <div id="perfilOut"></div>
+    </div>
+
+</main>
+</div><!-- /shell -->
+
+<!-- ===== LEXIA BUTTON ===== -->
+<button id="lexia-btn" onclick="toggleLexia()" title="Falar com Lexia">
+  👩‍⚖️
+  <div class="lexia-notif">1</div>
+</button>
+
+<!-- ===== LEXIA PANEL ===== -->
+<div id="lexia-panel">
+  <div class="lexia-head">
+    <div class="lexia-avatar">👩‍⚖️</div>
+    <div>
+      <div class="lexia-name">Lexia</div>
+      <div class="lexia-role">Publicitária Jurídica · IA Elite</div>
+    </div>
+    <button class="lexia-close" onclick="toggleLexia()">×</button>
+  </div>
+  <div class="lexia-msgs" id="lexiaMsgs"></div>
+  <div class="lexia-quick" id="lexiaQuick">
+    <div class="q-chip" onclick="askLexia('Crie uma estratégia de crescimento para meu Instagram')">📈 Estratégia</div>
+    <div class="q-chip" onclick="askLexia('Quais são as melhores tendências de conteúdo jurídico?')">🔥 Tendências</div>
+    <div class="q-chip" onclick="askLexia('Me dê 5 ideias de Reels para advogado trabalhista')">🎬 Ideias Reels</div>
+    <div class="q-chip" onclick="askLexia('Como aplicar social selling no Instagram jurídico?')">💼 Social Selling</div>
+    <div class="q-chip" onclick="askLexia('Analise meu perfil: 1.200 seguidores, 2% engajamento, 2 posts/semana, área trabalhista')">🔍 Analisar Perfil</div>
+  </div>
+  <div class="lexia-input-row">
+    <textarea class="lexia-input" id="lexiaInput" placeholder="Pergunte para Lexia..." rows="1"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendLexia()}"></textarea>
+    <button class="lexia-send" onclick="sendLexia()">➤</button>
+  </div>
+</div>
+
+<script>
+// ========== CONFIG ==========
+const API = 'https://api.anthropic.com/v1/messages';
+const MDL = 'claude-sonnet-4-20250514';
+let gLastContent = '', rLastContent = '', lLastContent = '';
+
+// ========== SYSTEM PROMPTS ==========
+const SYS_MARKETING = `Você é a Lexia, publicitária e estrategista de marketing digital de alto padrão especializada em advocacia e escritórios jurídicos no Brasil.
+Você domina: marketing de conteúdo jurídico, copywriting de alta conversão, social selling, análise de métricas, produção de roteiros para Reels e vídeos, legendas de alto engajamento, estratégias de crescimento orgânico e tráfego pago.
+Você respeita o Código de Ética da OAB: nunca promete resultados, não faz captação ostensiva, usa linguagem educativa e que posiciona o advogado como autoridade.
+Suas respostas são práticas, detalhadas, baseadas em dados e prontas para implementar imediatamente.
+Formate a resposta com emojis estratégicos, seções bem definidas e tom profissional mas acessível.`;
+
+const SYS_LEXIA = `Você é Lexia, uma publicitária virtual de alto padrão especializada exclusivamente em marketing jurídico para advogados brasileiros.
+Você é direta, criativa, impactante e pautada em dados. Fala como uma estrategista sênior — com confiança e autoridade.
+Você domina: marketing digital jurídico, copywriting, social selling, análise de métricas de Instagram/LinkedIn/TikTok, roteiros para Reels, produção de conteúdo em massa, tendências de conteúdo jurídico, psicologia do público-alvo de advogados.
+Você respeita o Código de Ética da OAB e sempre orienta dentro dos limites éticos da publicidade jurídica.
+Ao buscar notícias ou tendências, você usa seu conhecimento atualizado sobre o direito brasileiro.
+Seja concisa mas completa. Use emojis com moderação. Fale diretamente com o advogado.`;
+
+// ========== UTILS ==========
+async function callAI(system, userMsg, maxTok) {
+  maxTok = maxTok || 1000;
+  const r = await fetch(API, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      model: MDL,
+      max_tokens: maxTok,
+      system: system,
+      messages: [{role:'user', content: userMsg}]
+    })
+  });
+  if (!r.ok) {
+    const err = await r.json().catch(() => ({}));
+    throw new Error(err.error ? err.error.message : 'Erro na API');
+  }
+  const d = await r.json();
+  return d.content.map(b => b.text || '').join('');
+}
+
+function fmt(t) {
+  return t
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^### (.+)$/gm, '<h3 style="color:var(--gold2);font-family:var(--font-serif);margin:14px 0 5px">$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2 style="color:var(--gold2);font-family:var(--font-serif);margin:16px 0 6px;font-size:16px">$1</h2>')
+    .replace(/^# (.+)$/gm, '<h2 style="color:var(--gold);font-family:var(--font-serif);margin:16px 0 8px;font-size:18px">$1</h2>')
+    .replace(/\n/g, '<br>');
+}
+
+function loader(el) {
+  el.innerHTML = '<div class="loader"><div class="dots"><span></span><span></span><span></span></div><span>Gerando com IA...</span></div>';
+}
+
+function copyText(t, btn) {
+  navigator.clipboard.writeText(t).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✅ Copiado!';
+    setTimeout(() => btn.textContent = orig, 2000);
+  });
+}
+
+// ========== NAV ==========
+const titles = {
+  dashboard:  ['Dashboard ', '<em>Executivo</em>'],
+  noticias:   ['Notícias ', '<em>Jurídicas</em>'],
+  gerador:    ['Gerador de ', '<em>Conteúdo</em>'],
+  roteiro:    ['Roteiro para ', '<em>Reels</em>'],
+  legenda:    ['Legendas ', '<em>Inteligentes</em>'],
+  massa:      ['Geração em ', '<em>Massa</em>'],
+  analise:    ['Análise de ', '<em>Métricas</em>'],
+  estrategia: ['Estratégia de ', '<em>Crescimento</em>'],
+  publico:    ['Análise de ', '<em>Público-Alvo</em>'],
+  selling:    ['Social ', '<em>Selling</em>'],
+  calendario: ['Calendário ', '<em>Editorial</em>'],
+  perfil:     ['Análise de ', '<em>Perfil Social</em>'],
+};
+
+function nav(page) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('on'));
+  const panel = document.getElementById('p-' + page);
+  if (panel) panel.classList.add('on');
+  const ni = document.getElementById('ni-' + page);
+  if (ni) ni.classList.add('on');
+  const t = titles[page] || [page, ''];
+  document.getElementById('pageTitle').innerHTML = t[0] + t[1];
+  closeSidebar();
+  window.scrollTo(0, 0);
+}
+
+// ========== SIDEBAR MOBILE ==========
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('mob-open');
+  document.getElementById('mobOverlay').classList.add('on');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('mob-open');
+  document.getElementById('mobOverlay').classList.remove('on');
+}
+
+// ========== TONE CHIPS ==========
+function pickTone(el) {
+  document.querySelectorAll('#gTones .chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+}
+function getTone() {
+  const a = document.querySelector('#gTones .chip.on');
+  return a ? a.textContent : 'Educativo';
+}
+
+// ========== DASHBOARD INIT ==========
+function initDashboard() {
+  // Calendar
+  const grid = document.getElementById('calMini');
+  if (!grid || grid.children.length > 0) return;
+  const days = ['D','S','T','Q','Q','S','S'];
+  const hc = [3,5,7,10,12,14,17,19,21,24,26,28];
+  let h = days.map(d => '<div class="cal-dh">'+d+'</div>').join('');
+  for (let i=0;i<2;i++) h += '<div class="cal-d em"></div>';
+  for (let d=1;d<=30;d++) {
+    const isT = d===new Date().getDate(), has=hc.includes(d);
+    h += '<div class="cal-d '+(isT?'td':has?'hc':'em')+'">'+d+(has?'<div class="cal-dot"></div>':'')+'</div>';
+  }
+  grid.innerHTML = h;
+
+  // Audience bars
+  const aud = [
+    ['Trabalhista',34],['Família',22],['Consumidor',19],['Penal',14],['Civil',11]
+  ];
+  document.getElementById('audBars').innerHTML = aud.map(([l,p]) =>
+    `<div class="aud-row"><div class="aud-lbl"><span>${l}</span><span class="aud-pct">${p}%</span></div><div class="pb"><div class="pf" style="width:${p}%"></div></div></div>`
+  ).join('');
+
+  // Ideas
+  const ideas = [
+    {f:'Reel',t:'5 direitos trabalhistas que seu chefe esconde'},
+    {f:'Carrossel',t:'O que fazer quando te demitem sem justa causa'},
+    {f:'Story',t:'Você conhece seus direitos? (enquete)'},
+    {f:'Feed',t:'Mito: demissão por justa causa perde tudo'},
+    {f:'Reel',t:'Pensão alimentícia em 60 segundos'},
+    {f:'Carrossel',t:'3 golpes no Procon que você não sabia'},
+  ];
+  const fc = {Reel:'t-reel',Carrossel:'t-carr',Story:'t-story',Feed:'t-feed'};
+  document.getElementById('ideasStrip').innerHTML = ideas.map(i =>
+    `<div class="idea-chip" onclick="nav('gerador')"><div class="icf"><span class="tag ${fc[i.f]}">${i.f}</span></div><div class="ict">${i.t}</div></div>`
+  ).join('');
+}
+
+// ========== GERADOR ==========
+async function gerarConteudo() {
+  const area = document.getElementById('gArea').value;
+  const fmt_ = document.getElementById('gFormato').value;
+  const tema = document.getElementById('gTema').value;
+  const tom = getTone();
+  const pub = document.getElementById('gPublico').value;
+  const out = document.getElementById('gOut');
+  document.getElementById('gCopyBtn').style.display = 'none';
+  document.getElementById('gRegenBtn').style.display = 'none';
+  loader(out);
+  const fmtMap = {
+    feed:'Carrossel educativo para feed (5-7 slides com título impactante, conteúdo de cada slide e legenda completa)',
+    story:'Sequência de 5 stories com texto curto, gancho e CTA interativo em cada',
+    legenda:'Legenda completa (300-500 palavras) com abertura impactante, desenvolvimento e CTA forte',
+    dica:'Post de dica rápida (máx 200 palavras), direto e impactante',
+    mito:'Post Mito vs. Verdade com 3 mitos comuns derrubados',
+    lista:'Post em lista com dados e números (5 itens)',
+    cta:'Post educativo com CTA forte para consulta (sem prometer resultado)',
+    curiosidade:'Curiosidade jurídica surpreendente e pouco conhecida',
+    poll:'Post interativo com enquete ou pergunta que estimula comentários',
+  };
+  try {
+    const res = await callAI(SYS_MARKETING,
+      `Crie conteúdo para redes sociais de um advogado:\n- ÁREA: ${area}\n- FORMATO: ${fmtMap[fmt_]||fmt_}\n- TEMA: ${tema||'tema relevante da área'}\n- TOM: ${tom}\n- PÚBLICO: ${pub||'pessoas que podem precisar de advogado'}\n\nAo final inclua: hashtags (15-20), melhor horário para publicar, dica de visual.`
+    );
+    gLastContent = res;
+    out.innerHTML = '<div class="res-body">'+fmt(res)+'</div>';
+    document.getElementById('gCopyBtn').style.display = '';
+    document.getElementById('gRegenBtn').style.display = '';
+  } catch(e) {
+    out.innerHTML = '<div class="placeholder-box"><div class="pi">⚠️</div><p>'+e.message+'</p></div>';
+  }
+}
+function copyGen() { copyText(gLastContent, document.getElementById('gCopyBtn')); }
+
+// ========== ROTEIRO ==========
+async function gerarRoteiro() {
+  const area = document.getElementById('rArea').value;
+  const tema = document.getElementById('rTema').value;
+  const dur = document.getElementById('rDur').value;
+  const est = document.getElementById('rEstilo').value;
+  const cta = document.getElementById('rCTA').value;
+  const out = document.getElementById('rOut');
+  document.getElementById('rCopyBtn').style.display = 'none';
+  loader(out);
+  try {
+    const res = await callAI(SYS_MARKETING,
+      `Crie roteiro COMPLETO para Reel de Instagram:\n- ÁREA: ${area}\n- TEMA: ${tema||'tema jurídico relevante'}\n- DURAÇÃO: ${dur} segundos\n- ESTILO: ${est}\n- CTA FINAL: ${cta}\n\nEstruture com marcação de tempo [00:00], texto falado e indicações de câmera/visual. Inclua legenda pronta com hashtags.`,
+      1000
+    );
+    rLastContent = res;
+    out.innerHTML = '<div class="res-body">'+fmt(res)+'</div>';
+    document.getElementById('rCopyBtn').style.display = '';
+  } catch(e) {
+    out.innerHTML = '<div class="placeholder-box"><div class="pi">⚠️</div><p>'+e.message+'</p></div>';
+  }
+}
+function copyRot() { copyText(rLastContent, document.getElementById('rCopyBtn')); }
+
+// ========== LEGENDA ==========
+async function gerarLegenda() {
+  const area = document.getElementById('lArea').value;
+  const tema = document.getElementById('lTema').value;
+  const est = document.getElementById('lEstilo').value;
+  const tam = document.getElementById('lTamanho').value;
+  const out = document.getElementById('lOut');
+  document.getElementById('lCopyBtn').style.display = 'none';
+  loader(out);
+  try {
+    const res = await callAI(SYS_MARKETING,
+      `Crie uma legenda de alto engajamento para Instagram de advogado de ${area}:\n- CONTEÚDO DO POST: ${tema||'post jurídico educativo'}\n- ESTILO: ${est}\n- TAMANHO: ${tam}\n\nInclua: abertura impactante (gancho), desenvolvimento, CTA claro e hashtags estratégicas.`
+    );
+    lLastContent = res;
+    out.innerHTML = '<div class="res-body">'+fmt(res)+'</div>';
+    document.getElementById('lCopyBtn').style.display = '';
+  } catch(e) {
+    out.innerHTML = '<div class="placeholder-box"><div class="pi">⚠️</div><p>'+e.message+'</p></div>';
+  }
+}
+function copyLeg() { copyText(lLastContent, document.getElementById('lCopyBtn')); }
+
+// ========== MASSA ==========
+async function gerarMassa() {
+  const area = document.getElementById('mArea').value;
+  const qtd = parseInt(document.getElementById('mQtd').value);
+  const fmts = document.getElementById('mFmt').value;
+  const out = document.getElementById('mOut');
+  out.innerHTML = '<div class="loader"><div class="dots"><span></span><span></span><span></span></div><span>Gerando '+qtd+' peças...</span></div>';
+  try {
+    const res = await callAI(SYS_MARKETING,
+      `Crie exatamente ${qtd} posts de ${fmts} para advogado de ${area}. Responda APENAS com JSON puro (sem markdown, sem backticks): [{\"dia\":1,\"formato\":\"Feed\",\"titulo\":\"...\",\"conteudo\":\"conteúdo completo 200-350 palavras\",\"hashtags\":\"#tag1 #tag2\",\"horario\":\"18h\"}]`,
+      1000
+    );
+    let posts;
+    try {
+      const clean = res.replace(/```json|```/g,'').trim();
+      posts = JSON.parse(clean);
+    } catch(_) {
+      out.innerHTML = '<div class="card"><div class="res-body">'+fmt(res)+'</div></div>';
+      return;
+    }
+    const fc2 = {Feed:'t-feed',Reel:'t-reel',Story:'t-story',Carrossel:'t-carr'};
+    out.innerHTML = `<div style="margin-bottom:14px;font-size:13px;color:var(--grn)">✅ ${posts.length} peças geradas</div>
+      <div class="multi-list">${posts.map(p=>`
+        <div class="multi-item">
+          <div class="multi-item-head">
+            <span class="tag ${fc2[p.formato]||'t-feed'}">${p.formato}</span>
+            <span style="color:var(--muted);font-size:11px">Dia ${p.dia} · ${p.horario||'18h'}</span>
+          </div>
+          <div class="multi-item-title">${p.titulo}</div>
+          <div class="multi-item-body">${fmt(p.conteudo)}</div>
+          <div class="ht-cloud">${(p.hashtags||'').split(' ').filter(h=>h).map(h=>'<span class="ht">'+h+'</span>').join('')}</div>
+        </div>`).join('')}
+      </div>`;
+  } catch(e) {
+    out.innerHTML = '<div class="card" style="color:var(--red)">'+e.message+'</div>';
+  }
+}
+
+// ========== ANÁLISE ==========
+async function analisarMetricas() {
+  const seg = document.getElementById('mSeg').value;
+  const cres = document.getElementById('mCres').value;
+  const eng = document.getElementById('mEng').value;
+  const posts = document.getElementById('mPosts').value;
+  const alc = document.getElementById('mAlc').value;
+  const area = document.getElementById('mAreaTxt').value;
+  const out = document.getElementById('aOut');
+  loader(out);
+  try {
+    const res = await callAI(SYS_MARKETING,
+      `Analise as métricas deste perfil de advogado e dê diagnóstico completo:\n- Seguidores: ${seg||'n/i'}\n- Crescimento/mês: ${cres||'n/i'}%\n- Engajamento: ${eng||'n/i'}%\n- Posts/semana: ${posts||'n/i'}\n- Alcance médio: ${alc||'n/i'}\n- Área: ${area||'n/i'}\n\nInclua: 1) Diagnóstico com nota 0-10 para cada métrica e benchmark do setor jurídico 2) Pontos críticos imediatos 3) Oportunidades 4) Plano de ação 30/60/90 dias com metas 5) Tipos de conteúdo que mais convertem para este perfil`,
+      1000
+    );
+    out.innerHTML = '<div class="card"><div class="res-body">'+fmt(res)+'</div></div>';
+  } catch(e) {
+    out.innerHTML = '<div class="card" style="color:var(--red)">'+e.message+'</div>';
+  }
+}
+
+// ========== ESTRATÉGIA ==========
+async function gerarEstrategia(tipo) {
+  const perfil = document.getElementById('ePerfil').value;
+  const out = document.getElementById('eOut');
+  const titles2 = {crescimento:'Crescimento de Seguidores',engajamento:'Engajamento',autoridade:'Posicionamento como Referência',captacao:'Captação de Clientes'};
+  loader(out);
+  try {
+    const res = await callAI(SYS_MARKETING,
+      `Crie estratégia completa de ${titles2[tipo]} para: ${perfil||'advogado iniciante nas redes'}.\n\nSeja extremamente prático: passo a passo semanal, tipos de conteúdo com exemplos reais, métricas, erros comuns de advogados, exemplos de títulos de posts que funcionam, cronograma.`,
+      1000
+    );
+    out.innerHTML = '<div class="card" style="margin-top:20px"><div class="card-title">'+titles2[tipo]+'</div><div class="res-body">'+fmt(res)+'</div></div>';
+  } catch(e) {
+    out.innerHTML = '<div class="card" style="color:var(--red)">'+e.message+'</div>';
+  }
+}
+
+// ========== PÚBLICO ==========
+async function analisarPublico() {
+  const area = document.getElementById('pArea').value;
+  const cidade = document.getElementById('pCidade').value;
+  const out = document.getElementById('pOut');
+  loader(out);
+  try {
+    const res = await callAI(SYS_MARKETING,
+      `Análise completa de público-alvo para advogado de ${area} em ${cidade||'todo o Brasil'}.\n\nInclua: 3 personas detalhadas (nome fictício, idade, situação, dores, medos, desejos), comportamento digital, linguagem e termos que usam, como alcançá-los no Instagram e LinkedIn, exemplos de títulos que funcionam para cada persona.`,
+      1000
+    );
+    out.innerHTML = '<div class="card"><div class="res-body">'+fmt(res)+'</div></div>';
+  } catch(e) {
+    out.innerHTML = '<div class="card" style="color:var(--red)">'+e.message+'</div>';
+  }
+}
+
+// ========== SOCIAL SELLING ==========
+async function gerarSelling() {
+  const ctx = document.getElementById('ssCtx').value;
+  const out = document.getElementById('ssOut');
+  loader(out);
+  try {
+    const res = await callAI(SYS_MARKETING,
+      `Crie um plano completo de Social Selling jurídico para: ${ctx||'advogado com presença nas redes sociais'}.\n\nInclua: o que é social selling ético na advocacia, técnicas práticas para Instagram e LinkedIn, como abordar potenciais clientes sem ser invasivo, scripts de DM e comentários que convertem, como usar stories e Reels para gerar consultas, métricas de social selling para acompanhar, exemplos reais de abordagens que funcionam no contexto jurídico brasileiro.`,
+      1000
+    );
+    out.innerHTML = '<div class="card"><div class="res-body">'+fmt(res)+'</div></div>';
+  } catch(e) {
+    out.innerHTML = '<div class="card" style="color:var(--red)">'+e.message+'</div>';
+  }
+}
+
+// ========== NOTÍCIAS ==========
+async function buscarNoticias() {
+  const area = document.getElementById('newsArea').value;
+  const out = document.getElementById('newsOutput');
+  loader(out);
+  try {
+    const res = await callAI(SYS_MARKETING,
+      `Você é especialista em direito brasileiro e marketing jurídico.\n\nPara a área de ${area}, forneça:\n\n1. 📰 NOTÍCIAS E TENDÊNCIAS RECENTES (5 temas quentes e relevantes do momento no Brasil)\n2. 💡 PARA CADA TEMA: sugestão de como transformar em conteúdo para Instagram (formato, título de post e ângulo mais engajador)\n3. 🔥 TEMA VIRAL DA SEMANA: 1 assunto com maior potencial viral e roteiro rápido de Reel\n\nSeja específico com leis, decisões recentes do STF/TST, mudanças legislativas e casos relevantes que o público leigo precisa saber.`,
+      1000
+    );
+    out.innerHTML = '<div class="card"><div class="res-body">'+fmt(res)+'</div></div>';
+  } catch(e) {
+    out.innerHTML = '<div class="card" style="color:var(--red)">'+e.message+'</div>';
+  }
+}
+
+// ========== CALENDÁRIO ==========
+async function gerarCalendario() {
+  const area = document.getElementById('cArea').value;
+  const per = document.getElementById('cPer').value;
+  const freq = document.getElementById('cFreq').value;
+  const out = document.getElementById('cOut');
+  loader(out);
+  try {
+    const res = await callAI(SYS_MARKETING,
+      `Crie calendário editorial de ${per} dias para advogado de ${area}, publicando ${freq}.\nResponda APENAS com JSON puro (sem markdown): [{\"dia\":1,\"diaSem\":\"Seg\",\"formato\":\"Feed\",\"tema\":\"...\",\"titulo\":\"...\",\"objetivo\":\"Educar\",\"horario\":\"19h\"}]`,
+      1000
+    );
+    let cal;
+    try {
+      const clean = res.replace(/```json|```/g,'').trim();
+      cal = JSON.parse(clean);
+    } catch(_) {
+      out.innerHTML = '<div class="card"><div class="res-body">'+fmt(res)+'</div></div>';
+      return;
+    }
+    const fc3={Feed:'t-feed',Reel:'t-reel',Story:'t-story',Carrossel:'t-carr'};
+    const oc={Educar:'var(--acc2)',Engajar:'var(--gold)',Converter:'var(--grn)',Relacionamento:'#e74c3c'};
+    out.innerHTML = `<div class="card">
+      <div class="card-title">Calendário ${per} dias — ${area} <span class="badge">${cal.length} posts</span></div>
+      <div style="overflow-x:auto">
+      <table class="cal-table">
+        <thead><tr><th>Dia</th><th>Dia Sem.</th><th>Formato</th><th>Título</th><th>Objetivo</th><th>Horário</th></tr></thead>
+        <tbody>${cal.map(p=>`<tr>
+          <td style="font-family:var(--font-mono);color:var(--muted)">${p.dia}</td>
+          <td style="color:var(--plat)">${p.diaSem||''}</td>
+          <td><span class="tag ${fc3[p.formato]||'t-feed'}">${p.formato}</span></td>
+          <td><div style="font-size:12.5px;color:var(--plat)">${p.titulo}</div><div style="font-size:11px;color:var(--muted);margin-top:2px">${p.tema}</div></td>
+          <td style="color:${oc[p.objetivo]||'var(--muted)'};font-size:11px">${p.objetivo}</td>
+          <td style="font-family:var(--font-mono);font-size:11px;color:var(--muted)">${p.horario}</td>
+        </tr>`).join('')}</tbody>
+      </table></div></div>`;
+  } catch(e) {
+    out.innerHTML = '<div class="card" style="color:var(--red)">'+e.message+'</div>';
+  }
+}
+
+// ========== LEXIA CHAT ==========
+let lexiaOpen = false;
+let lexiaHistory = [];
+const lexiaWelcome = `Olá! Sou a **Lexia**, sua publicitária jurídica de elite. 🏛️
+
+Sou especializada em marketing digital para advogados — de Reels virais a estratégias de captação ética, métricas, social selling e tudo que você precisa para crescer nas redes.
+
+**O que posso fazer por você agora?** Use os atalhos abaixo ou me pergunte qualquer coisa sobre marketing jurídico.`;
+
+function toggleLexia() {
+  lexiaOpen = !lexiaOpen;
+  const panel = document.getElementById('lexia-panel');
+  panel.classList.toggle('open', lexiaOpen);
+  document.querySelector('#lexia-btn .lexia-notif').style.display = 'none';
+  if (lexiaOpen && lexiaHistory.length === 0) {
+    addLexiaMsg('ai', lexiaWelcome);
+  }
+  if (lexiaOpen) {
+    setTimeout(() => {
+      const msgs = document.getElementById('lexiaMsgs');
+      msgs.scrollTop = msgs.scrollHeight;
+      document.getElementById('lexiaInput').focus();
+    }, 100);
+  }
+}
+
+function addLexiaMsg(role, text) {
+  const msgs = document.getElementById('lexiaMsgs');
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  const formattedText = text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n/g, '<br>');
+  div.innerHTML = `<div class="msg-av">${role==='ai'?'👩‍⚖️':'👤'}</div><div class="msg-bubble">${formattedText}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function addLexiaLoading() {
+  const msgs = document.getElementById('lexiaMsgs');
+  const div = document.createElement('div');
+  div.className = 'msg ai';
+  div.id = 'lexia-loading';
+  div.innerHTML = '<div class="msg-av">👩‍⚖️</div><div class="msg-bubble"><div class="dots"><span></span><span></span><span></span></div></div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+async function sendLexia() {
+  const input = document.getElementById('lexiaInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  input.style.height = 'auto';
+  await askLexia(text);
+}
+
+async function askLexia(text) {
+  addLexiaMsg('user', text);
+  lexiaHistory.push({role:'user', content: text});
+  addLexiaLoading();
+  const sendBtn = document.querySelector('.lexia-send');
+  if (sendBtn) sendBtn.disabled = true;
+
+  try {
+    const msgs = lexiaHistory.slice(-8);
+    const r = await fetch(API, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: MDL,
+        max_tokens: 1000,
+        system: SYS_LEXIA,
+        messages: msgs
+      })
+    });
+    const d = await r.json();
+    const reply = d.content.map(b=>b.text||'').join('');
+    document.getElementById('lexia-loading').remove();
+    addLexiaMsg('ai', reply);
+    lexiaHistory.push({role:'assistant', content: reply});
+  } catch(e) {
+    const ld = document.getElementById('lexia-loading');
+    if (ld) ld.remove();
+    addLexiaMsg('ai', '⚠️ Erro de conexão. Tente novamente.');
+  }
+  if (sendBtn) sendBtn.disabled = false;
+}
+
+// auto-resize textarea
+document.getElementById('lexiaInput').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+});
+
+// ========== ANÁLISE DE PERFIL SOCIAL ==========
+let currentNet = 'instagram';
+
+function selectNet(el) {
+  document.querySelectorAll('.net-tab').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+  currentNet = el.getAttribute('data-net');
+  const placeholders = {
+    instagram: 'advogadatrabalhista',
+    facebook:  'escritoriojuridico',
+    linkedin:  'dra-maria-silva-advogada',
+    tiktok:    'drjoaoadvogado',
+    youtube:   'CanalJuridicoBR',
+    twitter:   'advogadoBR',
+  };
+  document.getElementById('profileHandle').placeholder = placeholders[currentNet] || 'nomeDoPerfil';
+}
+
+const netLabels = {
+  instagram:'Instagram', facebook:'Facebook', linkedin:'LinkedIn',
+  tiktok:'TikTok', youtube:'YouTube', twitter:'X / Twitter'
+};
+
+const netColors = {
+  instagram:'#e1306c', facebook:'#1877f2', linkedin:'#0a66c2',
+  tiktok:'#69c9d0', youtube:'#ff0000', twitter:'#000'
+};
+
+const netPillars = {
+  instagram:['Bio & Identidade','Consistência Visual','Frequência de Posts','Engajamento','Uso de Reels','Estratégia de Hashtags','Stories & Interatividade','CTA & Conversão'],
+  facebook: ['Bio & Informações','Frequência de Posts','Engajamento','Uso de Vídeo','Grupos & Comunidade','Anúncios Orgânicos','Reviews & Avaliações','CTA & Conversão'],
+  linkedin: ['Perfil Completo','Headline & Summary','Publicações & Artigos','Engajamento','Conexões & Rede','Recomendações','Posicionamento','Geração de Leads'],
+  tiktok:   ['Bio & Link','Frequência de Vídeos','Qualidade do Conteúdo','Engajamento','Tendências & Sounds','Duets & Collabs','Hashtags','Conversão'],
+  youtube:  ['Canal & Arte','Frequência de Vídeos','SEO & Títulos','Thumbnails','Engajamento','Shorts','Playlists','Monetização/CTA'],
+  twitter:  ['Bio & Identidade','Frequência de Tweets','Engajamento','Threads','Uso de Mídia','Retweets & Alcance','Listas','Posicionamento'],
+};
+
+async function analisarPerfil() {
+  const handle = document.getElementById('profileHandle').value.trim().replace('@','');
+  if (!handle) {
+    document.getElementById('profileHandle').focus();
+    document.getElementById('profileHandle').style.borderColor = 'var(--red)';
+    setTimeout(() => document.getElementById('profileHandle').style.borderColor = '', 1500);
+    return;
+  }
+  const seg    = document.getElementById('pfSeg').value;
+  const area   = document.getElementById('pfArea').value;
+  const cidade = document.getElementById('pfCidade').value;
+  const net    = currentNet;
+  const netLabel = netLabels[net];
+  const out = document.getElementById('perfilOut');
+
+  // Show loading with profile header
+  out.innerHTML = `
+    <div class="card" style="margin-bottom:16px;display:flex;align-items:center;gap:14px">
+      <div style="width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">⚖️</div>
+      <div>
+        <div style="font-family:var(--font-serif);font-size:17px;color:var(--plat)">@${handle}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">${netLabel} · Análise em andamento...</div>
+      </div>
+      <div style="margin-left:auto"><div class="dots"><span></span><span></span><span></span></div></div>
+    </div>
+    <div class="loader"><div class="dots"><span></span><span></span><span></span></div><span>A Lexia está auditando o perfil @${handle} no ${netLabel}...</span></div>`;
+
+  const pillars = netPillars[net] || netPillars.instagram;
+
+  const prompt = `Você é a Lexia, auditora sênior de marketing digital jurídico. Faça uma auditoria COMPLETA e PROFISSIONAL do perfil de advogado no ${netLabel}:
+
+PERFIL: @${handle}
+REDE SOCIAL: ${netLabel}
+${seg ? `SEGUIDORES INFORMADOS: ${seg}` : ''}
+${area ? `ÁREA DE ATUAÇÃO: ${area}` : ''}
+${cidade ? `CIDADE: ${cidade}` : ''}
+
+Realize uma auditoria como se tivesse analisado o perfil real. Baseie-se no nome de usuário para inferir o tipo de conteúdo e posicionamento.
+
+Responda APENAS com JSON puro (sem markdown, sem backticks):
+{
+  "handle": "@${handle}",
+  "rede": "${netLabel}",
+  "nota_geral": 72,
+  "classificacao": "Perfil em Desenvolvimento",
+  "resumo_executivo": "Parágrafo de 2-3 linhas resumindo o diagnóstico geral do perfil",
+  "pillars": [
+    {"nome": "${pillars[0]}", "nota": 75, "diagnostico": "análise deste pilar"},
+    {"nome": "${pillars[1]}", "nota": 60, "diagnostico": "análise deste pilar"},
+    {"nome": "${pillars[2]}", "nota": 80, "diagnostico": "análise deste pilar"},
+    {"nome": "${pillars[3]}", "nota": 65, "diagnostico": "análise deste pilar"},
+    {"nome": "${pillars[4]}", "nota": 70, "diagnostico": "análise deste pilar"},
+    {"nome": "${pillars[5]}", "nota": 55, "diagnostico": "análise deste pilar"},
+    {"nome": "${pillars[6]}", "nota": 78, "diagnostico": "análise deste pilar"},
+    {"nome": "${pillars[7]}", "nota": 68, "diagnostico": "análise deste pilar"}
+  ],
+  "pontos_fortes": ["ponto 1", "ponto 2", "ponto 3"],
+  "pontos_criticos": ["crítica 1", "crítica 2", "crítica 3"],
+  "oportunidades": ["oportunidade 1", "oportunidade 2", "oportunidade 3"],
+  "plano_acao": {
+    "imediato": "O que fazer esta semana (3-4 ações específicas)",
+    "curto_prazo": "O que fazer em 30 dias (3-4 ações específicas)",
+    "medio_prazo": "O que fazer em 90 dias (3-4 ações específicas)"
+  },
+  "tipos_conteudo": ["tipo 1 com descrição", "tipo 2", "tipo 3", "tipo 4", "tipo 5"],
+  "benchmark": "Como este perfil se compara com perfis jurídicos de sucesso no ${netLabel}",
+  "potencial_crescimento": "Estimativa de crescimento em 6 meses seguindo as recomendações"
+}`;
+
+  try {
+    const res = await callAI(SYS_LEXIA, prompt, 1000);
+    let data;
+    try {
+      const clean = res.replace(/```json|```/g,'').trim();
+      data = JSON.parse(clean);
+    } catch(_) {
+      out.innerHTML = '<div class="card"><div class="res-body">'+fmt(res)+'</div></div>';
+      return;
+    }
+    renderProfileAnalysis(data, net);
+  } catch(e) {
+    out.innerHTML = '<div class="card" style="color:var(--red);padding:20px">'+e.message+'</div>';
+  }
+}
+
+function scoreColor(n) {
+  if (n >= 80) return '#27ae60';
+  if (n >= 60) return '#c8a84b';
+  return '#c0392b';
+}
+
+function scoreLabel(n) {
+  if (n >= 85) return 'Excelente';
+  if (n >= 70) return 'Bom';
+  if (n >= 55) return 'Regular';
+  return 'Crítico';
+}
+
+function renderProfileAnalysis(d, net) {
+  const out = document.getElementById('perfilOut');
+  const nota = d.nota_geral || 0;
+  const color = scoreColor(nota);
+  const circ = 2 * Math.PI * 52; // r=52
+  const dash = circ - (nota/100)*circ;
+
+  // Build pillar bars HTML
+  const pillarsHtml = (d.pillars||[]).map(p => `
+    <div class="pillar-row">
+      <div class="pillar-head">
+        <span class="pillar-name">${p.nome}</span>
+        <span class="pillar-score">${p.nota}/100</span>
+      </div>
+      <div class="pillar-bar">
+        <div class="pillar-fill" style="width:${p.nota}%;background:${scoreColor(p.nota)}"></div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px">${p.diagnostico||''}</div>
+    </div>`).join('');
+
+  // Build accordion blocks
+  const blocks = [
+    {ico:'💪', title:'Pontos Fortes', content: (d.pontos_fortes||[]).map((x,i)=>`<div style="display:flex;gap:8px;margin-bottom:8px"><span style="color:var(--grn);font-weight:700">${i+1}.</span><span style="font-size:13px;color:var(--plat)">${x}</span></div>`).join('')},
+    {ico:'🚨', title:'Pontos Críticos', content: (d.pontos_criticos||[]).map((x,i)=>`<div style="display:flex;gap:8px;margin-bottom:8px"><span style="color:var(--red);font-weight:700">${i+1}.</span><span style="font-size:13px;color:var(--plat)">${x}</span></div>`).join('')},
+    {ico:'💡', title:'Oportunidades de Crescimento', content: (d.oportunidades||[]).map((x,i)=>`<div style="display:flex;gap:8px;margin-bottom:8px"><span style="color:var(--gold);font-weight:700">${i+1}.</span><span style="font-size:13px;color:var(--plat)">${x}</span></div>`).join('')},
+    {ico:'📋', title:'Plano de Ação', content: `
+      <div style="margin-bottom:14px"><div style="font-size:10px;color:var(--grn);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px">⚡ Esta Semana</div><div style="font-size:13px;color:var(--plat);line-height:1.6">${d.plano_acao?.imediato||''}</div></div>
+      <div style="margin-bottom:14px"><div style="font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px">📅 30 Dias</div><div style="font-size:13px;color:var(--plat);line-height:1.6">${d.plano_acao?.curto_prazo||''}</div></div>
+      <div><div style="font-size:10px;color:var(--acc2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px">🎯 90 Dias</div><div style="font-size:13px;color:var(--plat);line-height:1.6">${d.plano_acao?.medio_prazo||''}</div></div>`},
+    {ico:'🎬', title:'Tipos de Conteúdo Recomendados', content: (d.tipos_conteudo||[]).map((x,i)=>`<div style="display:flex;gap:8px;margin-bottom:8px"><span style="color:var(--acc2);font-weight:700">${i+1}.</span><span style="font-size:13px;color:var(--plat)">${x}</span></div>`).join('')},
+    {ico:'📊', title:'Benchmark & Potencial', content: `
+      <div style="margin-bottom:14px"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px">Benchmark</div><div style="font-size:13px;color:var(--plat);line-height:1.6">${d.benchmark||''}</div></div>
+      <div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px">Potencial de Crescimento</div><div style="font-size:13px;color:var(--plat);line-height:1.6">${d.potencial_crescimento||''}</div></div>`},
+  ];
+
+  const blocksHtml = blocks.map((b,i) => `
+    <div class="ablock${i===0?' open':''}" id="ab${i}">
+      <div class="ablock-head" onclick="toggleBlock(${i})">
+        <span class="ablock-head-ico">${b.ico}</span>
+        <span class="ablock-head-title">${b.title}</span>
+        <span class="ablock-head-arrow">▼</span>
+      </div>
+      <div class="ablock-body">${b.content}</div>
+    </div>`).join('');
+
+  const netColor = netColors[net] || 'var(--gold)';
+
+  out.innerHTML = `
+    <!-- Profile Header -->
+    <div class="card" style="margin-bottom:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,${netColor},var(--gold));display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">⚖️</div>
+      <div style="flex:1;min-width:180px">
+        <div style="font-family:var(--font-serif);font-size:18px;color:var(--plat)">${d.handle||('@'+document.getElementById('profileHandle').value)}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">${d.rede} · ${d.classificacao||''}</div>
+        <div style="font-size:12.5px;color:var(--plat);margin-top:7px;line-height:1.5">${d.resumo_executivo||''}</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-shrink:0">
+        <button class="btn btn-ghost" style="font-size:11px" onclick="analisarPerfil()">🔄 Re-analisar</button>
+        <button class="btn btn-gold" style="font-size:11px" onclick="exportarAnalise()">📄 Exportar</button>
+      </div>
+    </div>
+
+    <!-- Score + Pillars -->
+    <div class="score-section">
+      <div class="score-ring-wrap">
+        <div class="score-ring">
+          <svg viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="52"/>
+            <circle class="ring-fill" cx="60" cy="60" r="52"
+              stroke="${color}"
+              stroke-dasharray="${circ}"
+              stroke-dashoffset="${circ}"
+              id="ringFill"/>
+          </svg>
+          <div class="ring-text">
+            <div class="score-num" id="scoreNum">0</div>
+            <div class="score-lbl">/ 100</div>
+          </div>
+        </div>
+        <div class="score-label">${d.classificacao||''}</div>
+        <div class="score-badge">${scoreLabel(nota)}</div>
+      </div>
+      <div class="score-pillars">
+        <div style="font-family:var(--font-serif);font-size:13px;color:var(--plat);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bdr)">Análise por Pilar</div>
+        ${pillarsHtml}
+      </div>
+    </div>
+
+    <!-- Accordion blocks -->
+    <div class="analysis-blocks">${blocksHtml}</div>
+  `;
+
+  // Animate score ring
+  setTimeout(() => {
+    const ring = document.getElementById('ringFill');
+    const numEl = document.getElementById('scoreNum');
+    if (ring) ring.style.strokeDashoffset = dash;
+    // count up
+    let cur = 0;
+    const step = Math.ceil(nota / 40);
+    const timer = setInterval(() => {
+      cur = Math.min(cur + step, nota);
+      if (numEl) numEl.textContent = cur;
+      if (cur >= nota) clearInterval(timer);
+    }, 30);
+  }, 100);
+}
+
+function toggleBlock(i) {
+  const block = document.getElementById('ab' + i);
+  if (block) block.classList.toggle('open');
+}
+
+function exportarAnalise() {
+  const handle = document.getElementById('profileHandle').value || 'perfil';
+  const content = document.getElementById('perfilOut').innerText;
+  const blob = new Blob([content], {type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'analise-'+handle+'-lexmark.txt';
+  a.click();
+}
+
+// ========== INIT ==========
+initDashboard();
+</script>
+</body>
+</html>
