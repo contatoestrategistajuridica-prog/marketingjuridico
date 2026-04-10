@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>LexMark — Marketing Jurídico de Elite</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#07070d;--s1:#0f0f1a;--s2:#161625;--s3:#1e1e30;
+  --gold:#c8a84b;--gold2:#e6c96a;--goldf:rgba(200,168,75,.12);
+  --plat:#e2ddd4;--muted:#72728a;--acc2:#6aaad4;
+  --grn:#27ae60;--red:#c0392b;--bdr:rgba(200,168,75,.18);--r:10px;
+  --fs:'Cormorant Garamond',Georgia,serif;
+  --fn:'DM Sans',system-ui,sans-serif;
+  --fm:'DM Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--plat);font-family:var(--fn);min-height:100vh;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+
+/* MODAL */
+#apiModal{position:fixed;inset:0;background:rgba(7,7,13,.97);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px}
+#apiModal.hidden{display:none}
+.api-box{background:var(--s1);border:1px solid var(--bdr);border-radius:18px;padding:36px 32px;max-width:500px;width:100%;text-align:center}
+.api-logo{font-size:48px;margin-bottom:14px}
+.api-title{font-family:var(--fs);font-size:26px;color:var(--plat);margin-bottom:6px;font-weight:600}
+.api-free{display:inline-flex;align-items:center;gap:6px;background:rgba(39,174,96,.12);border:1px solid rgba(39,174,96,.3);border-radius:20px;padding:4px 14px;font-size:11px;color:var(--grn);margin-bottom:16px;font-weight:700}
+.api-sub{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:18px}
+.api-steps{text-align:left;background:var(--s2);border:1px solid var(--bdr);border-radius:10px;padding:15px 18px;margin-bottom:18px;font-size:12px;color:var(--plat);line-height:1.9}
+.api-steps a{color:var(--gold);text-decoration:none;font-weight:600}
+.api-steps strong{color:var(--gold2)}
+.api-wrap{position:relative;margin-bottom:10px}
+.api-inp{width:100%;background:var(--s2);border:1px solid var(--bdr);border-radius:8px;color:var(--plat);padding:12px 42px 12px 14px;font-family:var(--fm);font-size:13px;outline:none;transition:border-color .2s}
+.api-inp:focus{border-color:var(--gold)}
+.api-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px}
+.api-err{color:var(--red);font-size:12px;margin-bottom:10px;display:none;padding:8px 12px;background:rgba(192,57,43,.1);border-radius:6px;border:1px solid rgba(192,57,43,.25);line-height:1.5}
+
+/* LAYOUT */
+.shell{display:flex;min-height:100vh}
+.sidebar{width:240px;min-width:240px;background:var(--s1);border-right:1px solid var(--bdr);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:200;transition:transform .3s}
+.slogo{padding:22px 18px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px}
+.sli{width:34px;height:34px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.slt{font-family:var(--fs);font-size:19px;color:var(--plat);font-weight:600}
+.sls{font-size:9px;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-top:1px}
+.snav{flex:1;overflow-y:auto;padding:10px 8px}
+.snav::-webkit-scrollbar{width:3px}
+.snav::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
+.nsec{font-size:9px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;padding:14px 10px 6px}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:7px;cursor:pointer;color:var(--muted);font-size:13px;transition:all .18s;margin-bottom:1px;border:1px solid transparent;user-select:none}
+.ni:hover{background:var(--goldf);color:var(--plat)}
+.ni.on{background:var(--goldf);color:var(--gold);border-color:var(--bdr)}
+.ni .ico{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+.sfoot{padding:12px;border-top:1px solid var(--bdr)}
+.plan-box{background:linear-gradient(135deg,rgba(200,168,75,.08),rgba(61,122,181,.06));border:1px solid var(--bdr);border-radius:8px;padding:11px 13px;margin-bottom:8px}
+.plan-name{color:var(--gold);font-size:12px;font-weight:600;margin-bottom:2px}
+.plan-desc{color:var(--muted);font-size:10px}
+.api-mini{display:flex;align-items:center;gap:7px;cursor:pointer;padding:7px 9px;border-radius:7px;border:1px solid var(--bdr);transition:border-color .2s}
+.api-mini:hover{border-color:var(--gold)}
+.adot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.adot.on{background:var(--grn)}
+.adot.off{background:var(--red);animation:pulse 2s infinite}
+.atxt{font-size:10px;color:var(--muted);flex:1}
+.atroc{font-size:10px;color:var(--gold)}
+
+.mob-tog{display:none;position:fixed;top:14px;left:14px;z-index:300;width:36px;height:36px;border-radius:8px;background:var(--s1);border:1px solid var(--bdr);cursor:pointer;align-items:center;justify-content:center;font-size:18px}
+.mob-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:150}
+.mob-ov.on{display:block}
+
+.main{margin-left:240px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{padding:13px 28px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;background:rgba(7,7,13,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);position:sticky;top:0;z-index:100;gap:12px}
+.ptitle{font-family:var(--fs);font-size:20px;color:var(--plat)}
+.ptitle em{color:var(--gold);font-style:italic}
+.tbr{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.live{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.ldot{width:6px;height:6px;border-radius:50%;background:var(--grn);flex-shrink:0;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+
+.content{padding:24px 28px;flex:1}
+.panel{display:none;animation:fup .3s ease}
+.panel.on{display:block}
+@keyframes fup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border-radius:7px;font-size:12.5px;font-family:var(--fn);font-weight:500;cursor:pointer;border:none;transition:all .18s;user-select:none;-webkit-tap-highlight-color:transparent}
+.btn-g{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#07070d;font-weight:700}
+.btn-g:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 4px 20px rgba(200,168,75,.3)}
+.btn-o{background:transparent;border:1px solid var(--bdr);color:var(--muted)}
+.btn-o:hover{border-color:var(--gold);color:var(--gold)}
+.btn-full{width:100%;padding:13px;font-size:13.5px}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+
+/* CARDS */
+.card{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);padding:20px}
+.ctitle{font-family:var(--fs);font-size:15px;color:var(--plat);margin-bottom:14px;padding-bottom:11px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.badge{font-family:var(--fn);font-size:10px;background:var(--goldf);color:var(--gold);border:1px solid var(--bdr);border-radius:20px;padding:2px 9px}
+
+/* METRICS */
+.mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.mc{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);padding:18px;position:relative;overflow:hidden;transition:border-color .2s}
+.mc:hover{border-color:var(--gold)}
+.mc::before{content:'';position:absolute;top:0;right:0;width:50px;height:50px;background:radial-gradient(circle,var(--goldf),transparent);border-radius:50%;transform:translate(16px,-16px)}
+.ml{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.mv{font-size:26px;font-weight:600;color:var(--plat);font-family:var(--fm)}
+.mch{font-size:11px;color:var(--grn);margin-top:3px}
+.mico{position:absolute;top:14px;right:14px;font-size:20px;opacity:.4}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;margin-bottom:20px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+
+/* FORMS */
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}
+.field label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.field input,.field select,.field textarea{background:var(--s2);border:1px solid var(--bdr);border-radius:7px;color:var(--plat);padding:9px 11px;font-family:var(--fn);font-size:13px;outline:none;transition:border-color .18s;width:100%}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold)}
+.field textarea{resize:vertical;min-height:78px;line-height:1.5}
+.field select option{background:#161625}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{padding:5px 11px;border-radius:20px;font-size:11.5px;border:1px solid var(--bdr);cursor:pointer;color:var(--muted);transition:all .15s;user-select:none}
+.chip.on,.chip:hover{border-color:var(--gold);color:var(--gold);background:var(--goldf)}
+
+/* GEN LAYOUT */
+.gwrap{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start}
+.gout{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);display:flex;flex-direction:column;min-height:460px}
+.ghead{padding:13px 18px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.gbody{padding:20px;flex:1;overflow-y:auto}
+.gbody::-webkit-scrollbar{width:4px}
+.gbody::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
+.ph{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--muted);text-align:center;gap:10px;padding:30px;min-height:300px}
+.ph .pi{font-size:36px;opacity:.3}
+.ph p{font-size:12.5px;line-height:1.6;max-width:260px}
+
+/* LOADING */
+.ldr{display:flex;align-items:center;gap:12px;padding:24px 20px;color:var(--muted);font-size:13px}
+.dots{display:inline-flex;gap:5px;align-items:center}
+.dots span{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:db 1.2s ease-in-out infinite}
+.dots span:nth-child(2){animation-delay:.2s}
+.dots span:nth-child(3){animation-delay:.4s}
+@keyframes db{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+
+/* RESULT */
+.rb{line-height:1.75;font-size:13.5px;color:var(--plat);animation:fup .4s ease}
+.rb strong{color:var(--gold2)}
+.rb h1{font-family:var(--fs);color:var(--gold);margin:16px 0 8px;font-size:18px}
+.rb h2{font-family:var(--fs);color:var(--gold2);margin:14px 0 6px;font-size:16px}
+.rb h3{font-family:var(--fs);color:var(--gold2);margin:12px 0 4px;font-size:14px}
+.rb ul,.rb ol{padding-left:18px;margin:6px 0}
+.rb li{margin-bottom:4px}
+
+/* MISC */
+.pb{height:5px;background:var(--s2);border-radius:3px;overflow:hidden;margin-top:5px}
+.pf{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width 1s ease}
+.ar{margin-bottom:10px}
+.al{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.ap{color:var(--gold);font-family:var(--fm)}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.tr{background:rgba(61,122,181,.2);color:var(--acc2);border:1px solid rgba(61,122,181,.3)}
+.tf{background:rgba(200,168,75,.1);color:var(--gold);border:1px solid var(--bdr)}
+.ts{background:rgba(192,57,43,.1);color:#e74c3c;border:1px solid rgba(192,57,43,.3)}
+.tc{background:rgba(39,174,96,.1);color:#2ecc71;border:1px solid rgba(39,174,96,.3)}
+.ht-cloud{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.ht{background:var(--s2);border:1px solid var(--bdr);border-radius:4px;padding:2px 7px;font-size:11px;color:var(--acc2);font-family:var(--fm)}
+.sg{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:22px}
+.sc{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);padding:20px;cursor:pointer;transition:all .2s;user-select:none}
+.sc:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 6px 24px rgba(200,168,75,.08)}
+.si{font-size:26px;margin-bottom:10px}
+.stit{font-family:var(--fs);font-size:15px;color:var(--plat);margin-bottom:5px}
+.sd{font-size:11.5px;color:var(--muted);line-height:1.55}
+.cm{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cdh{font-size:9px;color:var(--muted);text-align:center;padding:3px 0;text-transform:uppercase}
+.cd{aspect-ratio:1;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-family:var(--fm);border:1px solid transparent;transition:all .15s;position:relative;cursor:pointer}
+.cd:hover{border-color:var(--gold)}
+.cd.hc{background:var(--goldf);color:var(--gold)}
+.cd.td{border-color:var(--gold);background:rgba(200,168,75,.18);color:var(--gold2);font-weight:700}
+.cd.em{color:var(--s3)}
+.cdot{width:3px;height:3px;border-radius:50%;background:var(--gold);position:absolute;bottom:2px}
+.is{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.is::-webkit-scrollbar{height:3px}
+.is::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
+.ic{flex-shrink:0;min-width:135px;background:var(--s2);border:1px solid var(--bdr);border-radius:7px;padding:9px 12px;font-size:11.5px;cursor:pointer;transition:all .2s}
+.ic:hover{border-color:var(--gold);background:var(--goldf)}
+.icf{font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
+.ict{color:var(--plat);line-height:1.35}
+.ml-list{display:flex;flex-direction:column;gap:16px}
+.mi{background:var(--s2);border:1px solid var(--bdr);border-radius:var(--r);padding:16px 18px}
+.mih{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.mit{font-family:var(--fs);font-size:14px;color:var(--plat);margin-bottom:8px}
+.mib{font-size:12.5px;line-height:1.7;color:var(--plat)}
+.ctbl{width:100%;border-collapse:collapse;font-size:12px}
+.ctbl th{padding:8px 10px;text-align:left;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--bdr)}
+.ctbl td{padding:9px 10px;border-bottom:1px solid rgba(200,168,75,.06);vertical-align:top}
+.ctbl tr:last-child td{border-bottom:none}
+.ctbl tr:hover td{background:var(--goldf)}
+.mgr{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.mcard{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);padding:17px}
+.mcard label{display:block;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px}
+.mcard input{background:var(--s2);border:1px solid var(--bdr);border-radius:6px;color:var(--plat);padding:9px;font-family:var(--fm);font-size:15px;font-weight:600;width:100%;outline:none}
+.mcard input:focus{border-color:var(--gold)}
+.mhint{font-size:10px;color:var(--muted);margin-top:5px}
+.intro{background:linear-gradient(135deg,rgba(200,168,75,.07),rgba(61,122,181,.07));border:1px solid var(--bdr);border-radius:var(--r);padding:22px 26px;margin-bottom:22px;display:flex;align-items:flex-start;gap:16px}
+.ii{font-size:32px;flex-shrink:0}
+.intro h2{font-family:var(--fs);font-size:18px;color:var(--plat);margin-bottom:5px}
+.intro p{color:var(--muted);font-size:12.5px;line-height:1.6;max-width:560px}
+.sh{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.sht{font-family:var(--fs);font-size:20px;color:var(--plat);font-weight:400}
+.sht em{color:var(--gold);font-style:italic}
+
+/* SOCIAL PROFILE */
+.ntabs{display:flex;gap:6px;margin-bottom:22px;flex-wrap:wrap}
+.ntab{display:flex;align-items:center;gap:7px;padding:9px 16px;border-radius:8px;font-size:12.5px;font-weight:500;border:1px solid var(--bdr);cursor:pointer;color:var(--muted);transition:all .18s;background:var(--s1);user-select:none}
+.ntab:hover{border-color:var(--gold);color:var(--plat)}
+.ntab.on{color:#fff;border-color:transparent}
+.ntab[data-n="instagram"].on{background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045)}
+.ntab[data-n="facebook"].on{background:#1877f2}
+.ntab[data-n="linkedin"].on{background:#0a66c2}
+.ntab[data-n="tiktok"].on{background:linear-gradient(135deg,#010101,#69c9d0,#ee1d52)}
+.ntab[data-n="youtube"].on{background:#ff0000}
+.ntab[data-n="twitter"].on{background:#111}
+.psbox{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);padding:22px 24px;margin-bottom:22px}
+.pirow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.piwrap{flex:1;min-width:220px;position:relative}
+.piat{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:14px;font-weight:700;pointer-events:none}
+.pinp{width:100%;background:var(--s2);border:1px solid var(--bdr);border-radius:8px;color:var(--plat);padding:11px 12px 11px 26px;font-family:var(--fn);font-size:14px;outline:none;transition:border-color .18s}
+.pinp:focus{border-color:var(--gold)}
+.pinp.err{border-color:var(--red)!important}
+.phint{font-size:11px;color:var(--muted);margin-top:8px}
+.pext{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px;padding-top:16px;border-top:1px solid var(--bdr)}
+.ssec{display:grid;grid-template-columns:180px 1fr;gap:24px;margin-bottom:22px;align-items:start}
+.srw{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);padding:22px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.sring{position:relative;width:120px;height:120px}
+.sring svg{width:120px;height:120px;transform:rotate(-90deg)}
+.rbg{fill:none;stroke:var(--s3);stroke-width:10}
+.rfil{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset 1.4s ease}
+.rtxt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.snum{font-family:var(--fm);font-size:28px;font-weight:600;color:var(--gold)}
+.slbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.slabel{font-family:var(--fs);font-size:14px;color:var(--plat);text-align:center}
+.sbadge{font-size:11px;padding:3px 10px;border-radius:20px;background:var(--goldf);color:var(--gold);border:1px solid var(--bdr)}
+.spill{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);padding:20px}
+.pr{margin-bottom:13px}
+.pr:last-child{margin-bottom:0}
+.ph2{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.pn{font-size:12px;color:var(--plat)}
+.ps{font-family:var(--fm);font-size:12px;color:var(--gold)}
+.pbar{height:6px;background:var(--s2);border-radius:3px;overflow:hidden}
+.pfill{height:100%;border-radius:3px;transition:width 1.2s ease}
+.ablocks{display:flex;flex-direction:column;gap:12px}
+.ab{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden}
+.abh{padding:12px 18px;display:flex;align-items:center;gap:9px;cursor:pointer;transition:background .15s;border-bottom:1px solid transparent}
+.abh:hover{background:var(--goldf)}
+.ab.open .abh{border-bottom-color:var(--bdr)}
+.abico{font-size:18px}
+.abt{font-family:var(--fs);font-size:14px;color:var(--plat);flex:1}
+.aba{color:var(--muted);font-size:12px;transition:transform .2s}
+.ab.open .aba{transform:rotate(180deg)}
+.abb{display:none;padding:16px 18px}
+.ab.open .abb{display:block;animation:fup .2s ease}
+
+/* LEXIA */
+#lbtn{position:fixed;bottom:22px;right:22px;z-index:500;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 6px 28px rgba(200,168,75,.45);transition:all .2s}
+#lbtn:hover{transform:scale(1.09)}
+.lnotif{position:absolute;top:2px;right:2px;width:14px;height:14px;border-radius:50%;background:var(--red);border:2px solid var(--bg);font-size:8px;color:#fff;display:flex;align-items:center;justify-content:center}
+#lpanel{position:fixed;bottom:90px;right:22px;z-index:499;width:380px;max-width:calc(100vw - 28px);background:var(--s1);border:1px solid var(--bdr);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.65);display:none;flex-direction:column;max-height:calc(100vh - 110px);overflow:hidden}
+#lpanel.open{display:flex;animation:sup .25s ease}
+@keyframes sup{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.lhead{padding:14px 18px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:11px;flex-shrink:0}
+.lav{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.lname{font-family:var(--fs);font-size:15px;color:var(--plat);font-weight:600}
+.lrole{font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.1em}
+.lcls{margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1}
+.lmsgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:180px}
+.lmsgs::-webkit-scrollbar{width:3px}
+.lmsgs::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
+.msg{display:flex;gap:8px;align-items:flex-start;animation:fup .25s ease}
+.msg.u{flex-direction:row-reverse}
+.mb{max-width:84%;padding:10px 13px;border-radius:12px;font-size:12.5px;line-height:1.62}
+.msg.ai .mb{background:var(--s2);border:1px solid var(--bdr);color:var(--plat);border-top-left-radius:3px}
+.msg.u .mb{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#07070d;font-weight:500;border-top-right-radius:3px}
+.mav{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.msg.ai .mav{background:linear-gradient(135deg,var(--gold),var(--gold2))}
+.msg.u .mav{background:var(--s3)}
+.lquick{padding:8px 12px;border-top:1px solid var(--bdr);display:flex;gap:6px;overflow-x:auto;flex-shrink:0}
+.lquick::-webkit-scrollbar{height:0}
+.qc{flex-shrink:0;padding:5px 11px;border-radius:20px;font-size:11px;border:1px solid var(--bdr);color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap;user-select:none}
+.qc:hover{border-color:var(--gold);color:var(--gold);background:var(--goldf)}
+.linrow{padding:10px 12px;border-top:1px solid var(--bdr);display:flex;gap:8px;align-items:flex-end;flex-shrink:0}
+.linp{flex:1;background:var(--s2);border:1px solid var(--bdr);border-radius:8px;color:var(--plat);padding:9px 12px;font-family:var(--fn);font-size:13px;outline:none;resize:none;max-height:100px;line-height:1.4}
+.linp:focus{border-color:var(--gold)}
+.lsend{width:36px;height:36px;border-radius:8px;flex-shrink:0;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.lsend:disabled{opacity:.4;cursor:not-allowed}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.mob-open{transform:translateX(0)}
+  .main{margin-left:0}
+  .mob-tog{display:flex}
+  .topbar{padding:12px 16px 12px 58px}
+  .content{padding:18px 16px}
+  .mgrid{grid-template-columns:repeat(2,1fr)}
+  .g2{grid-template-columns:1fr}
+  .g3{grid-template-columns:repeat(2,1fr)}
+  .gwrap{grid-template-columns:1fr}
+  .sg{grid-template-columns:1fr}
+  .mgr{grid-template-columns:repeat(2,1fr)}
+  .ssec{grid-template-columns:1fr}
+  .pext{grid-template-columns:1fr 1fr}
+  #lpanel{width:calc(100vw - 28px);right:14px}
+}
+@media(max-width:540px){
+  .mgrid{grid-template-columns:1fr 1fr}
+  .mgr{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:1fr}
+  .pext{grid-template-columns:1fr}
+  .ntab{padding:7px 11px;font-size:11px}
+}
+</style>
+</head>
+<body>
+
+<!-- MODAL -->
+<div id="apiModal">
+  <div class="api-box">
+    <div class="api-logo">⚖️</div>
+    <div class="api-title">LexMark Elite</div>
+    <div class="api-free">✅ 100% GRATUITO — Google Gemini</div>
+    <div class="api-sub">Insira sua chave gratuita do Google Gemini para ativar a IA.</div>
+    <div class="api-steps">
+      <div>1. Acesse <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com/app/apikey</a></div>
+      <div>2. Clique em <strong>Create API Key</strong> → escolha um projeto</div>
+      <div>3. Copie a chave e cole abaixo</div>
+      <div style="color:var(--grn);margin-top:6px">✓ 1.500 requisições/dia gratuitas · Sem cartão</div>
+    </div>
+    <div class="api-wrap">
+      <input class="api-inp" type="password" id="apiK" placeholder="AIzaSy..." onkeydown="if(event.key==='Enter')ativar()">
+      <button class="api-eye" onclick="toggleVis()">👁</button>
+    </div>
+    <div class="api-err" id="apiErr"></div>
+    <button class="btn btn-g btn-full" id="apiBtn" onclick="ativar()">🚀 Ativar LexMark Gratuitamente</button>
+  </div>
+</div>
+
+<div class="mob-ov" id="mobOv" onclick="closeSB()"></div>
+<div class="mob-tog" id="mobTog" onclick="openSB()">☰</div>
+
+<div class="shell">
+<aside class="sidebar" id="sidebar">
+  <div class="slogo">
+    <div class="sli">⚖️</div>
+    <div><div class="slt">LexMark</div><div class="sls">Marketing Jurídico</div></div>
+  </div>
+  <nav class="snav">
+    <div class="nsec">Visão Geral</div>
+    <div class="ni on" id="ni-dashboard"  onclick="nav('dashboard')"><span class="ico">📊</span>Dashboard</div>
+    <div class="ni"    id="ni-noticias"   onclick="nav('noticias')"><span class="ico">📰</span>Notícias Jurídicas</div>
+    <div class="ni"    id="ni-analise"    onclick="nav('analise')"><span class="ico">🔍</span>Análise de Métricas</div>
+    <div class="ni"    id="ni-perfil"     onclick="nav('perfil')"><span class="ico">🔎</span>Análise de Perfil Social</div>
+    <div class="nsec">Conteúdo</div>
+    <div class="ni"    id="ni-gerador"    onclick="nav('gerador')"><span class="ico">✨</span>Gerador de Conteúdo</div>
+    <div class="ni"    id="ni-roteiro"    onclick="nav('roteiro')"><span class="ico">🎬</span>Roteiro para Reels</div>
+    <div class="ni"    id="ni-massa"      onclick="nav('massa')"><span class="ico">🚀</span>Geração em Massa</div>
+    <div class="ni"    id="ni-legenda"    onclick="nav('legenda')"><span class="ico">📝</span>Legendas Inteligentes</div>
+    <div class="nsec">Estratégia</div>
+    <div class="ni"    id="ni-estrategia" onclick="nav('estrategia')"><span class="ico">🎯</span>Estratégia de Crescimento</div>
+    <div class="ni"    id="ni-publico"    onclick="nav('publico')"><span class="ico">👥</span>Público-Alvo</div>
+    <div class="ni"    id="ni-selling"    onclick="nav('selling')"><span class="ico">💼</span>Social Selling</div>
+    <div class="ni"    id="ni-calendario" onclick="nav('calendario')"><span class="ico">📅</span>Calendário Editorial</div>
+  </nav>
+  <div class="sfoot">
+    <div class="plan-box"><div class="plan-name">⚡ LexMark Elite</div><div class="plan-desc">Gemini API · Gratuito</div></div>
+    <div class="api-mini" onclick="mudarChave()">
+      <div class="adot off" id="apiDot"></div>
+      <div class="atxt" id="apiSt">Configurar chave gratuita</div>
+      <div class="atroc">trocar</div>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="ptitle" id="ptitle">Dashboard <em>Executivo</em></div>
+    <div class="tbr">
+      <div class="live"><div class="ldot"></div><span>Gemini IA</span></div>
+      <button class="btn btn-g" onclick="nav('gerador')">+ Criar</button>
+    </div>
+  </div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="panel on" id="p-dashboard">
+      <div class="mgrid">
+        <div class="mc"><div class="ml">Seguidores</div><div class="mv">12.4k</div><div class="mch">↑ +847 este mês</div><div class="mico">👥</div></div>
+        <div class="mc"><div class="ml">Engajamento</div><div class="mv">6.8%</div><div class="mch">↑ +1.2%</div><div class="mico">💬</div></div>
+        <div class="mc"><div class="ml">Alcance Mensal</div><div class="mv">89k</div><div class="mch">↑ +22%</div><div class="mico">📡</div></div>
+        <div class="mc"><div class="ml">Posts Gerados</div><div class="mv">247</div><div class="mch">↑ +38 semana</div><div class="mico">📄</div></div>
+      </div>
+      <div class="g2">
+        <div class="card"><div class="ctitle">Calendário Editorial — Abril 2025 <span class="badge">14 posts</span></div><div class="cm" id="calMini"></div></div>
+        <div class="card"><div class="ctitle">Perfil do Público</div><div id="audBars"></div></div>
+      </div>
+      <div class="card"><div class="ctitle">Ideias em Destaque <button class="btn btn-o" style="font-size:11px" onclick="nav('gerador')">Ver todas →</button></div><div class="is" id="ideasStrip"></div></div>
+    </div>
+
+    <!-- NOTÍCIAS -->
+    <div class="panel" id="p-noticias">
+      <div class="sh"><div class="sht">Notícias <em>Jurídicas</em></div></div>
+      <div class="intro"><div class="ii">📰</div><div><h2>Tendências Jurídicas para Conteúdo</h2><p>A Lexia gera temas quentes, tendências e sugestões de conteúdo para transformar em posts de alto impacto.</p></div></div>
+      <div class="field" style="max-width:420px;margin-bottom:16px"><label>Área do Direito</label>
+        <select id="newsArea"><option>Direito Trabalhista</option><option>Direito de Família</option><option>Direito do Consumidor</option><option>Direito Penal</option><option>Direito Empresarial</option><option>Direito Tributário</option><option>Direito Previdenciário</option><option>STF e Jurisprudência</option></select>
+      </div>
+      <button class="btn btn-g" style="margin-bottom:22px" onclick="buscarNoticias()">📰 Gerar Tendências + Sugestões</button>
+      <div id="newsOut"></div>
+    </div>
+
+    <!-- ANÁLISE MÉTRICAS -->
+    <div class="panel" id="p-analise">
+      <div class="sh"><div class="sht">Análise de <em>Métricas</em></div></div>
+      <div class="intro"><div class="ii">🔍</div><div><h2>Diagnóstico Estratégico com IA</h2><p>Insira seus números reais e receba diagnóstico completo com benchmark e plano de ação.</p></div></div>
+      <div class="mgr">
+        <div class="mcard"><label>Seguidores</label><input type="number" id="mSeg" placeholder="3200"><div class="mhint">Total atual</div></div>
+        <div class="mcard"><label>Crescimento/mês (%)</label><input type="number" id="mCres" placeholder="5.2" step="0.1"><div class="mhint">% crescimento mensal</div></div>
+        <div class="mcard"><label>Engajamento (%)</label><input type="number" id="mEng" placeholder="3.5" step="0.1"><div class="mhint">Likes+comentários/seg.</div></div>
+        <div class="mcard"><label>Posts / semana</label><input type="number" id="mPosts" placeholder="3"><div class="mhint">Frequência semanal</div></div>
+        <div class="mcard"><label>Alcance médio/post</label><input type="number" id="mAlc" placeholder="850"><div class="mhint">Pessoas alcançadas</div></div>
+        <div class="mcard"><label>Área de atuação</label><input type="text" id="mArea" placeholder="Ex: Trabalhista"></div>
+      </div>
+      <button class="btn btn-g" style="margin-bottom:22px" onclick="analisarMetricas()">🔍 Analisar com IA</button>
+      <div id="aOut"></div>
+    </div>
+
+    <!-- PERFIL SOCIAL -->
+    <div class="panel" id="p-perfil">
+      <div class="sh"><div class="sht">Análise de <em>Perfil Social</em></div></div>
+      <div class="intro"><div class="ii">🔎</div><div><h2>Auditoria Completa com IA</h2><p>Digite o nome de usuário. A Lexia entrega auditoria com pontuação, pilares, diagnóstico e plano de ação para 6 redes.</p></div></div>
+      <div class="ntabs">
+        <div class="ntab on" data-n="instagram" onclick="selNet(this)"><span>📸</span>Instagram</div>
+        <div class="ntab" data-n="facebook"  onclick="selNet(this)"><span>👤</span>Facebook</div>
+        <div class="ntab" data-n="linkedin"  onclick="selNet(this)"><span>💼</span>LinkedIn</div>
+        <div class="ntab" data-n="tiktok"    onclick="selNet(this)"><span>🎵</span>TikTok</div>
+        <div class="ntab" data-n="youtube"   onclick="selNet(this)"><span>▶️</span>YouTube</div>
+        <div class="ntab" data-n="twitter"   onclick="selNet(this)"><span>✖</span>X / Twitter</div>
+      </div>
+      <div class="psbox">
+        <div class="pirow">
+          <div class="piwrap"><span class="piat">@</span><input class="pinp" type="text" id="profH" placeholder="nomeDoPerfil" onkeydown="if(event.key==='Enter')analisarPerfil()"></div>
+          <button class="btn btn-g" style="padding:11px 22px;font-size:13px" onclick="analisarPerfil()">🔎 Analisar Perfil</button>
+        </div>
+        <div class="phint">💡 Digite o @ sem o símbolo. Campos abaixo são opcionais.</div>
+        <div class="pext">
+          <div class="field" style="margin-bottom:0"><label>Seguidores</label><input type="text" id="pfSeg" placeholder="Ex: 3.200"></div>
+          <div class="field" style="margin-bottom:0"><label>Área jurídica</label><input type="text" id="pfArea" placeholder="Ex: Trabalhista"></div>
+          <div class="field" style="margin-bottom:0"><label>Cidade</label><input type="text" id="pfCid" placeholder="Ex: São Paulo"></div>
+        </div>
+      </div>
+      <div id="perfilOut"></div>
+    </div>
+
+    <!-- GERADOR -->
+    <div class="panel" id="p-gerador">
+      <div class="sh"><div class="sht">Gerador de <em>Conteúdo</em></div></div>
+      <div class="gwrap">
+        <div class="card" style="display:flex;flex-direction:column;gap:0">
+          <div class="field"><label>Área do Direito</label>
+            <select id="gArea"><option value="trabalhista">Trabalhista</option><option value="familia">Família</option><option value="consumidor">Consumidor</option><option value="penal">Penal</option><option value="civil">Civil</option><option value="empresarial">Empresarial</option><option value="previdenciario">Previdenciário</option><option value="tributario">Tributário</option><option value="imobiliario">Imobiliário</option><option value="constitucional">Constitucional</option></select>
+          </div>
+          <div class="field"><label>Formato</label>
+            <select id="gFmt"><option value="feed">Carrossel educativo (Feed)</option><option value="story">Sequência de Stories</option><option value="legenda">Legenda completa</option><option value="dica">Dica Rápida</option><option value="mito">Mito vs. Verdade</option><option value="lista">Lista com dados</option><option value="cta">Post com CTA forte</option><option value="curiosidade">Curiosidade Jurídica</option><option value="poll">Post interativo / enquete</option></select>
+          </div>
+          <div class="field"><label>Tema / Assunto</label><input type="text" id="gTema" placeholder="Ex: rescisão indireta, guarda compartilhada..."></div>
+          <div class="field"><label>Tom de Voz</label>
+            <div class="chips" id="gTones">
+              <div class="chip on" onclick="pickTone(this)">Educativo</div>
+              <div class="chip" onclick="pickTone(this)">Empático</div>
+              <div class="chip" onclick="pickTone(this)">Autoridade</div>
+              <div class="chip" onclick="pickTone(this)">Urgente</div>
+              <div class="chip" onclick="pickTone(this)">Inspirador</div>
+              <div class="chip" onclick="pickTone(this)">Direto</div>
+            </div>
+          </div>
+          <div class="field"><label>Público-alvo</label><input type="text" id="gPub" placeholder="Ex: trabalhadores CLT, MEIs..."></div>
+          <button class="btn btn-g btn-full" onclick="gerarConteudo()">✨ Gerar com IA</button>
+        </div>
+        <div class="gout">
+          <div class="ghead"><span style="font-size:12px;color:var(--muted)">Resultado</span>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-o" id="gCopy" onclick="copiarGen()" style="display:none;font-size:11px">📋 Copiar</button>
+              <button class="btn btn-o" id="gReg" onclick="gerarConteudo()" style="display:none;font-size:11px">🔄 Regerar</button>
+            </div>
+          </div>
+          <div class="gbody" id="gOut"><div class="ph"><div class="pi">⚖️</div><p>Configure e clique em <strong>Gerar com IA</strong>.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROTEIRO -->
+    <div class="panel" id="p-roteiro">
+      <div class="sh"><div class="sht">Roteiro para <em>Reels</em></div></div>
+      <div class="gwrap">
+        <div class="card" style="display:flex;flex-direction:column;gap:0">
+          <div class="field"><label>Área</label><select id="rArea"><option>Trabalhista</option><option>Família</option><option>Consumidor</option><option>Penal</option><option>Civil</option><option>Empresarial</option><option>Previdenciário</option></select></div>
+          <div class="field"><label>Tema do Vídeo</label><input type="text" id="rTema" placeholder="Ex: 5 erros que custam o processo"></div>
+          <div class="field"><label>Duração</label><select id="rDur"><option value="15">15 segundos — gancho rápido</option><option value="30">30 segundos — didático</option><option value="60" selected>60 segundos — completo</option><option value="90">90 segundos — aprofundado</option></select></div>
+          <div class="field"><label>Estilo</label><select id="rEst"><option>Talking head (falando p/ câmera)</option><option>Narração com texto na tela</option><option>Storytelling com caso real</option><option>Lista com revelações progressivas</option><option>Pergunta polêmica + resposta</option></select></div>
+          <div class="field"><label>CTA Final</label><select id="rCTA"><option>Salva esse vídeo</option><option>Manda pra quem precisa</option><option>Comenta sua dúvida</option><option>Me chama no direct</option><option>Consulte um advogado</option></select></div>
+          <button class="btn btn-g btn-full" onclick="gerarRoteiro()">🎬 Gerar Roteiro</button>
+        </div>
+        <div class="gout">
+          <div class="ghead"><span style="font-size:12px;color:var(--muted)">Roteiro Completo</span><button class="btn btn-o" id="rCopy" onclick="copiarRot()" style="display:none;font-size:11px">📋 Copiar</button></div>
+          <div class="gbody" id="rOut"><div class="ph"><div class="pi">🎬</div><p>Preencha e gere um roteiro pronto para gravar.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MASSA -->
+    <div class="panel" id="p-massa">
+      <div class="sh"><div class="sht">Geração em <em>Massa</em></div></div>
+      <div class="intro"><div class="ii">🚀</div><div><h2>Semanas de conteúdo em minutos</h2><p>Configure área e quantidade. A IA gera múltiplas peças prontas para agendar.</p></div></div>
+      <div class="card" style="margin-bottom:20px">
+        <div class="ctitle">Configurar Lote</div>
+        <div class="g3" style="margin-bottom:14px">
+          <div class="field"><label>Área Principal</label><select id="mssArea"><option>Trabalhista</option><option>Família</option><option>Consumidor</option><option>Penal</option><option>Empresarial</option><option>Mix de Áreas</option></select></div>
+          <div class="field"><label>Quantidade</label><select id="mssQtd"><option value="3">3 posts</option><option value="5" selected>5 posts</option><option value="7">7 posts</option></select></div>
+          <div class="field"><label>Formatos</label><select id="mssFmt"><option>Todos os formatos</option><option>Somente Feed</option><option>Somente Stories</option><option>Feed + Reel</option></select></div>
+        </div>
+        <button class="btn btn-g" onclick="gerarMassa()">🚀 Gerar Lote com IA</button>
+      </div>
+      <div id="mOut"></div>
+    </div>
+
+    <!-- LEGENDAS -->
+    <div class="panel" id="p-legenda">
+      <div class="sh"><div class="sht">Legendas <em>Inteligentes</em></div></div>
+      <div class="gwrap">
+        <div class="card" style="display:flex;flex-direction:column;gap:0">
+          <div class="field"><label>Área</label><select id="lArea"><option>Trabalhista</option><option>Família</option><option>Consumidor</option><option>Penal</option><option>Civil</option><option>Empresarial</option></select></div>
+          <div class="field"><label>Sobre o que é o post?</label><textarea id="lTema" placeholder="Descreva o conteúdo do post ou foto..."></textarea></div>
+          <div class="field"><label>Estilo</label><select id="lEst"><option>Educativa e didática</option><option>Emotiva e empática</option><option>Direta e impactante</option><option>Storytelling</option><option>Polêmica que gera debate</option><option>Com pergunta interativa</option></select></div>
+          <div class="field"><label>Tamanho</label><select id="lTam"><option>Curta (até 150 palavras)</option><option selected>Média (150-300 palavras)</option><option>Longa (300-500 palavras)</option></select></div>
+          <button class="btn btn-g btn-full" onclick="gerarLegenda()">📝 Gerar Legenda</button>
+        </div>
+        <div class="gout">
+          <div class="ghead"><span style="font-size:12px;color:var(--muted)">Legenda Gerada</span><button class="btn btn-o" id="lCopy" onclick="copiarLeg()" style="display:none;font-size:11px">📋 Copiar</button></div>
+          <div class="gbody" id="lOut"><div class="ph"><div class="pi">📝</div><p>Descreva o post e gere uma legenda de alto engajamento.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESTRATÉGIA -->
+    <div class="panel" id="p-estrategia">
+      <div class="sh"><div class="sht">Estratégia de <em>Crescimento</em></div></div>
+      <div class="field" style="max-width:480px;margin-bottom:20px"><label>Descreva seu perfil</label><input type="text" id="ePerfil" placeholder="Ex: advogada trabalhista, OAB/SP, 500 seguidores"></div>
+      <div class="sg">
+        <div class="sc" onclick="gerarEstrategia('crescimento')"><div class="si">📈</div><div class="stit">Plano de Crescimento</div><div class="sd">Estratégia mês a mês para dobrar seguidores com consistência.</div></div>
+        <div class="sc" onclick="gerarEstrategia('engajamento')"><div class="si">💬</div><div class="stit">Aumento de Engajamento</div><div class="sd">Táticas para aumentar comentários, saves e compartilhamentos.</div></div>
+        <div class="sc" onclick="gerarEstrategia('autoridade')"><div class="si">⚖️</div><div class="stit">Posicionamento como Referência</div><div class="sd">Como se tornar o advogado de referência na sua especialidade.</div></div>
+        <div class="sc" onclick="gerarEstrategia('captacao')"><div class="si">🎯</div><div class="stit">Captação de Clientes</div><div class="sd">Funil de conteúdo para converter seguidores em clientes.</div></div>
+      </div>
+      <div id="eOut"></div>
+    </div>
+
+    <!-- PÚBLICO -->
+    <div class="panel" id="p-publico">
+      <div class="sh"><div class="sht">Análise de <em>Público-Alvo</em></div></div>
+      <div class="card" style="max-width:520px;margin-bottom:20px">
+        <div class="ctitle">Perfil do Escritório</div>
+        <div class="field"><label>Área de atuação</label><select id="pArea"><option>Trabalhista</option><option>Família</option><option>Consumidor</option><option>Penal</option><option>Empresarial</option><option>Civil Geral</option></select></div>
+        <div class="field"><label>Cidade / Região</label><input type="text" id="pCid" placeholder="Ex: São Paulo, interior de MG..."></div>
+        <button class="btn btn-g" onclick="analisarPublico()">👥 Analisar com IA</button>
+      </div>
+      <div id="pOut"></div>
+    </div>
+
+    <!-- SOCIAL SELLING -->
+    <div class="panel" id="p-selling">
+      <div class="sh"><div class="sht">Social <em>Selling</em></div></div>
+      <div class="intro"><div class="ii">💼</div><div><h2>Social Selling Jurídico</h2><p>Estratégias para converter seguidores em clientes de forma ética e eficaz.</p></div></div>
+      <div class="field" style="max-width:480px;margin-bottom:16px"><label>Área e situação atual</label><textarea id="ssCtx" placeholder="Ex: advogado trabalhista, 2.000 seguidores, poucas consultas pelo Instagram..." style="min-height:70px"></textarea></div>
+      <button class="btn btn-g" style="margin-bottom:22px" onclick="gerarSelling()">💼 Gerar Estratégia de Social Selling</button>
+      <div id="ssOut"></div>
+    </div>
+
+    <!-- CALENDÁRIO -->
+    <div class="panel" id="p-calendario">
+      <div class="sh"><div class="sht">Calendário <em>Editorial</em></div></div>
+      <div class="card" style="max-width:540px;margin-bottom:20px">
+        <div class="ctitle">Gerar Calendário</div>
+        <div class="g3" style="margin-bottom:14px">
+          <div class="field"><label>Área</label><select id="cArea"><option>Trabalhista</option><option>Família</option><option>Consumidor</option><option>Penal</option><option>Empresarial</option><option>Mix</option></select></div>
+          <div class="field"><label>Período</label><select id="cPer"><option value="7">7 dias</option><option value="15">15 dias</option><option value="30" selected>30 dias</option></select></div>
+          <div class="field"><label>Frequência</label><select id="cFreq"><option>3x / semana</option><option>5x / semana</option><option>Diário</option></select></div>
+        </div>
+        <button class="btn btn-g" onclick="gerarCalendario()">📅 Gerar Calendário</button>
+      </div>
+      <div id="cOut"></div>
+    </div>
+
+  </div>
+</main>
+</div>
+
+<!-- LEXIA -->
+<button id="lbtn" onclick="toggleLexia()" title="Falar com Lexia">
+  👩‍⚖️<div class="lnotif">1</div>
+</button>
+<div id="lpanel">
+  <div class="lhead">
+    <div class="lav">👩‍⚖️</div>
+    <div><div class="lname">Lexia</div><div class="lrole">Publicitária Jurídica · IA Elite</div></div>
+    <button class="lcls" onclick="toggleLexia()">×</button>
+  </div>
+  <div class="lmsgs" id="lmsgs"></div>
+  <div class="lquick">
+    <div class="qc" onclick="askLexia('Crie uma estratégia completa de crescimento para meu Instagram jurídico')">📈 Estratégia</div>
+    <div class="qc" onclick="askLexia('Quais são as melhores tendências de conteúdo jurídico agora?')">🔥 Tendências</div>
+    <div class="qc" onclick="askLexia('Me dê 5 ideias virais de Reels para advogado trabalhista')">🎬 Reels</div>
+    <div class="qc" onclick="askLexia('Como aplicar social selling ético no Instagram jurídico?')">💼 Selling</div>
+    <div class="qc" onclick="askLexia('Analise: 1.200 seguidores, 2% engajamento, 2 posts/semana, área trabalhista. O que melhorar?')">🔍 Analisar</div>
+  </div>
+  <div class="linrow">
+    <textarea class="linp" id="linp" placeholder="Pergunte para Lexia..." rows="1"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendLexia()}"></textarea>
+    <button class="lsend" id="lsendBtn" onclick="sendLexia()">➤</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════
+var KEY = '';
+// ENDPOINT CORRETO para Gemini 1.5 Flash
+var EP = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+var gLast='', rLast='', lLast='';
+var lexOpen=false, lexHist=[];
+
+var SYS = 'Você é a Lexia, publicitária e estrategista de marketing digital de alto padrão especializada em advocacia e escritórios jurídicos no Brasil. '
+  +'Domina: marketing de conteúdo jurídico, copywriting de alta conversão, social selling, análise de métricas, roteiros para Reels, legendas de alto engajamento, estratégias de crescimento. '
+  +'SEMPRE respeita o Código de Ética da OAB: nunca promete resultados, não faz captação ostensiva, usa linguagem educativa. '
+  +'Respostas práticas, detalhadas, prontas para usar. Use markdown: **negrito**, ## cabeçalhos, listas com emojis.';
+
+// ═══════════════════════════════════════════
+// CHAMADA GEMINI — ÚNICA FUNÇÃO, SEM BUGS
+// ═══════════════════════════════════════════
+async function gemini(prompt, maxTok) {
+  if (!KEY) { mudarChave(); throw new Error('Configure sua chave gratuita primeiro.'); }
+  var r = await fetch(EP + '?key=' + KEY, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ role: 'user', parts: [{ text: SYS + '\n\n' + prompt }] }],
+      generationConfig: { maxOutputTokens: maxTok || 900, temperature: 0.85, topP: 0.95 }
+    })
+  });
+  var d = await r.json();
+  if (d.error) throw new Error(d.error.message || 'Erro na API Gemini');
+  var cand = d.candidates && d.candidates[0];
+  if (!cand) throw new Error('Sem resposta da IA. Tente novamente.');
+  if (cand.finishReason === 'SAFETY') throw new Error('Conteúdo bloqueado por filtros de segurança. Reformule o pedido.');
+  if (!cand.content || !cand.content.parts) throw new Error('Resposta incompleta. Tente novamente.');
+  return cand.content.parts.map(function(p){ return p.text || ''; }).join('');
+}
+
+// Gemini com histórico para chat
+async function geminiChat(history) {
+  if (!KEY) { mudarChave(); throw new Error('Configure sua chave gratuita primeiro.'); }
+  // Primeiro turn deve ser 'user' — garantindo
+  var contents = history.map(function(m){
+    return { role: m.role === 'model' ? 'model' : 'user', parts: [{ text: m.text }] };
+  });
+  // Injeta system no primeiro user
+  if (contents.length > 0 && contents[0].role === 'user') {
+    contents[0].parts[0].text = SYS + '\n\n' + contents[0].parts[0].text;
+  }
+  var r = await fetch(EP + '?key=' + KEY, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: contents,
+      generationConfig: { maxOutputTokens: 700, temperature: 0.85 }
+    })
+  });
+  var d = await r.json();
+  if (d.error) throw new Error(d.error.message || 'Erro na API');
+  var cand = d.candidates && d.candidates[0];
+  if (!cand || !cand.content) throw new Error('Sem resposta. Tente novamente.');
+  return cand.content.parts.map(function(p){ return p.text || ''; }).join('');
+}
+
+// Extrai JSON de uma string (ignora texto antes/depois)
+function extrairJSON(str) {
+  var arr = str.match(/\[[\s\S]*\]/);
+  var obj = str.match(/\{[\s\S]*\}/);
+  if (arr) return arr[0];
+  if (obj) return obj[0];
+  return str.replace(/```json|```/g, '').trim();
+}
+
+// ═══════════════════════════════════════════
+// MODAL API KEY
+// ═══════════════════════════════════════════
+function ativar() {
+  var k = document.getElementById('apiK').value.trim();
+  var btn = document.getElementById('apiBtn');
+  var err = document.getElementById('apiErr');
+  err.style.display = 'none';
+  if (!k || k.length < 15) {
+    err.textContent = '⚠️ Chave inválida. Acesse aistudio.google.com/app/apikey e crie sua chave gratuita.';
+    err.style.display = 'block'; return;
+  }
+  btn.textContent = '⏳ Verificando...'; btn.disabled = true;
+  fetch(EP + '?key=' + k, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ role: 'user', parts: [{ text: 'Responda apenas: ok' }] }],
+      generationConfig: { maxOutputTokens: 5 }
+    })
+  }).then(function(r){ return r.json(); })
+  .then(function(d){
+    if (d.error) throw new Error(d.error.message);
+    KEY = k;
+    document.getElementById('apiModal').classList.add('hidden');
+    document.getElementById('apiDot').className = 'adot on';
+    document.getElementById('apiSt').textContent = 'Gemini ativo · Gratuito';
+    initDash();
+  })
+  .catch(function(e){
+    err.textContent = '❌ ' + e.message + '\n\nVerifique sua chave em aistudio.google.com/app/apikey';
+    err.style.display = 'block';
+    btn.disabled = false; btn.textContent = '🚀 Ativar LexMark Gratuitamente';
+  });
+}
+function toggleVis(){ var i=document.getElementById('apiK'); i.type=i.type==='password'?'text':'password'; }
+function mudarChave(){
+  document.getElementById('apiErr').style.display='none';
+  document.getElementById('apiBtn').disabled=false;
+  document.getElementById('apiBtn').textContent='🚀 Ativar LexMark Gratuitamente';
+  document.getElementById('apiModal').classList.remove('hidden');
+}
+
+// ═══════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════
+function fmt(t) {
+  if (!t) return '';
+  return t
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^### (.+)$/gm, '<h3 style="color:var(--gold2);font-family:var(--fs);margin:12px 0 4px;font-size:14px">$1</h3>')
+    .replace(/^## (.+)$/gm,  '<h2 style="color:var(--gold2);font-family:var(--fs);margin:14px 0 6px;font-size:16px">$1</h2>')
+    .replace(/^# (.+)$/gm,   '<h2 style="color:var(--gold);font-family:var(--fs);margin:16px 0 8px;font-size:18px">$1</h2>')
+    .replace(/\n/g, '<br>');
+}
+function ld(el, msg) {
+  el.innerHTML = '<div class="ldr"><div class="dots"><span></span><span></span><span></span></div><span>'+(msg||'Gerando com IA...')+'</span></div>';
+}
+function cpy(text, btn) {
+  var orig = btn.textContent;
+  navigator.clipboard.writeText(text).catch(function(){
+    var ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+  });
+  btn.textContent = '✅ Copiado!';
+  setTimeout(function(){ btn.textContent = orig; }, 2200);
+}
+function scolor(n){ return n>=80?'#27ae60':n>=60?'#c8a84b':'#c0392b'; }
+function slabel(n){ return n>=85?'Excelente':n>=70?'Bom':n>=55?'Regular':'Crítico'; }
+
+// ═══════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════
+var TITLES = {
+  dashboard:'Dashboard <em>Executivo</em>', noticias:'Notícias <em>Jurídicas</em>',
+  analise:'Análise de <em>Métricas</em>',  perfil:'Análise de <em>Perfil Social</em>',
+  gerador:'Gerador de <em>Conteúdo</em>',   roteiro:'Roteiro para <em>Reels</em>',
+  massa:'Geração em <em>Massa</em>',         legenda:'Legendas <em>Inteligentes</em>',
+  estrategia:'Estratégia de <em>Crescimento</em>', publico:'Análise de <em>Público-Alvo</em>',
+  selling:'Social <em>Selling</em>',         calendario:'Calendário <em>Editorial</em>',
+};
+function nav(page){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on')});
+  document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('on')});
+  var p=document.getElementById('p-'+page), n=document.getElementById('ni-'+page);
+  if(p) p.classList.add('on'); if(n) n.classList.add('on');
+  document.getElementById('ptitle').innerHTML = TITLES[page]||page;
+  closeSB(); window.scrollTo(0,0);
+}
+function openSB(){ document.getElementById('sidebar').classList.add('mob-open'); document.getElementById('mobOv').classList.add('on'); }
+function closeSB(){ document.getElementById('sidebar').classList.remove('mob-open'); document.getElementById('mobOv').classList.remove('on'); }
+
+// ═══════════════════════════════════════════
+// CHIPS
+// ═══════════════════════════════════════════
+function pickTone(el){ document.querySelectorAll('#gTones .chip').forEach(function(c){c.classList.remove('on')}); el.classList.add('on'); }
+function getTone(){ var a=document.querySelector('#gTones .chip.on'); return a?a.textContent:'Educativo'; }
+
+// ═══════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════
+function initDash(){
+  var g=document.getElementById('calMini');
+  if(g&&!g.children.length){
+    var days=['D','S','T','Q','Q','S','S'],hc=[3,5,7,10,12,14,17,19,21,24,26,28];
+    var h=days.map(function(d){return '<div class="cdh">'+d+'</div>';}).join('');
+    for(var i=0;i<2;i++) h+='<div class="cd em"></div>';
+    for(var d=1;d<=30;d++){
+      var isT=d===new Date().getDate(),has=hc.indexOf(d)>-1;
+      h+='<div class="cd '+(isT?'td':has?'hc':'em')+'">'+d+(has?'<div class="cdot"></div>':'')+'</div>';
+    }
+    g.innerHTML=h;
+  }
+  var ab=document.getElementById('audBars');
+  if(ab&&!ab.children.length){
+    [['Trabalhista',34],['Família',22],['Consumidor',19],['Penal',14],['Civil',11]].forEach(function(a){
+      ab.innerHTML+='<div class="ar"><div class="al"><span>'+a[0]+'</span><span class="ap">'+a[1]+'%</span></div><div class="pb"><div class="pf" style="width:'+a[1]+'%"></div></div></div>';
+    });
+  }
+  var is=document.getElementById('ideasStrip');
+  if(is&&!is.children.length){
+    var ideas=[{f:'Reel',t:'5 direitos trabalhistas que seu chefe esconde'},{f:'Carrossel',t:'O que fazer quando te demitem'},{f:'Story',t:'Você conhece seus direitos? (enquete)'},{f:'Feed',t:'Mito: demissão por justa causa perde tudo'},{f:'Reel',t:'Pensão alimentícia em 60 segundos'},{f:'Carrossel',t:'3 golpes no Procon que você não sabia'}];
+    var fc={Reel:'tr',Carrossel:'tc',Story:'ts',Feed:'tf'};
+    is.innerHTML=ideas.map(function(i){return '<div class="ic" onclick="nav(\'gerador\')"><div class="icf"><span class="tag '+fc[i.f]+'">'+i.f+'</span></div><div class="ict">'+i.t+'</div></div>';}).join('');
+  }
+}
+
+// ═══════════════════════════════════════════
+// GERADOR DE CONTEÚDO
+// ═══════════════════════════════════════════
+async function gerarConteudo(){
+  var area=document.getElementById('gArea').value, fmt_=document.getElementById('gFmt').value;
+  var tema=document.getElementById('gTema').value, tom=getTone(), pub=document.getElementById('gPub').value;
+  var out=document.getElementById('gOut');
+  document.getElementById('gCopy').style.display='none'; document.getElementById('gReg').style.display='none';
+  ld(out,'Criando conteúdo jurídico...');
+  var fmtD={feed:'Carrossel com 5-7 slides: título impactante, conteúdo de cada slide, legenda completa com emojis',story:'Sequência de 5 stories com gancho curto e CTA em cada um',legenda:'Legenda completa 300-500 palavras com abertura que para o scroll e CTA forte',dica:'Dica rápida max 200 palavras, direto e impactante',mito:'3 Mitos vs Verdade da área jurídica',lista:'Lista com 5 itens com dados e números impactantes',cta:'Post educativo com CTA ético para consulta',curiosidade:'Curiosidade jurídica surpreendente e didática',poll:'Post interativo com pergunta que gera comentários e debate'};
+  var p='Crie conteúdo COMPLETO para redes sociais de advogado:\nÁREA: '+area+'\nFORMATO: '+(fmtD[fmt_]||fmt_)+'\nTEMA: '+(tema||'tema relevante')+'\nTOM: '+tom+'\nPÚBLICO: '+(pub||'pessoas que precisam de advogado')+'\n\nAo final inclua:\n📌 HASHTAGS (15-20 relevantes)\n⏰ MELHOR HORÁRIO\n🖼 DICA VISUAL';
+  try {
+    var res=await gemini(p,900); gLast=res;
+    out.innerHTML='<div class="rb">'+fmt(res)+'</div>';
+    document.getElementById('gCopy').style.display=''; document.getElementById('gReg').style.display='';
+  } catch(e){ out.innerHTML='<div class="ph"><div class="pi">⚠️</div><p>'+e.message+'</p></div>'; }
+}
+function copiarGen(){ cpy(gLast,document.getElementById('gCopy')); }
+
+// ═══════════════════════════════════════════
+// ROTEIRO
+// ═══════════════════════════════════════════
+async function gerarRoteiro(){
+  var area=document.getElementById('rArea').value, tema=document.getElementById('rTema').value;
+  var dur=document.getElementById('rDur').value, est=document.getElementById('rEst').value, cta=document.getElementById('rCTA').value;
+  var out=document.getElementById('rOut');
+  document.getElementById('rCopy').style.display='none';
+  ld(out,'Criando roteiro completo...');
+  var p='Crie ROTEIRO COMPLETO para Reel de Instagram:\nÁREA: '+area+'\nTEMA: '+(tema||'tema jurídico viral')+'\nDURAÇÃO: '+dur+' segundos\nESTILO: '+est+'\nCTA: '+cta+'\n\nEstrutura com timestamps [00:00], texto falado e visual. Ao final: legenda pronta com hashtags.';
+  try {
+    var res=await gemini(p,900); rLast=res;
+    out.innerHTML='<div class="rb">'+fmt(res)+'</div>';
+    document.getElementById('rCopy').style.display='';
+  } catch(e){ out.innerHTML='<div class="ph"><div class="pi">⚠️</div><p>'+e.message+'</p></div>'; }
+}
+function copiarRot(){ cpy(rLast,document.getElementById('rCopy')); }
+
+// ═══════════════════════════════════════════
+// LEGENDA
+// ═══════════════════════════════════════════
+async function gerarLegenda(){
+  var area=document.getElementById('lArea').value, tema=document.getElementById('lTema').value;
+  var est=document.getElementById('lEst').value, tam=document.getElementById('lTam').value;
+  var out=document.getElementById('lOut');
+  document.getElementById('lCopy').style.display='none';
+  ld(out,'Criando legenda...');
+  var p='Legenda de alto engajamento para Instagram de advogado de '+area+':\nCONTEÚDO: '+(tema||'post jurídico')+'\nESTILO: '+est+'\nTAMANHO: '+tam+'\n\nEstrutura: 1) GANCHO irresistível (1a linha para o scroll) 2) DESENVOLVIMENTO com valor 3) CTA ético 4) HASHTAGS estratégicas (15-20)';
+  try {
+    var res=await gemini(p,700); lLast=res;
+    out.innerHTML='<div class="rb">'+fmt(res)+'</div>';
+    document.getElementById('lCopy').style.display='';
+  } catch(e){ out.innerHTML='<div class="ph"><div class="pi">⚠️</div><p>'+e.message+'</p></div>'; }
+}
+function copiarLeg(){ cpy(lLast,document.getElementById('lCopy')); }
+
+// ═══════════════════════════════════════════
+// MASSA
+// ═══════════════════════════════════════════
+async function gerarMassa(){
+  var area=document.getElementById('mssArea').value, qtd=parseInt(document.getElementById('mssQtd').value);
+  var fmts=document.getElementById('mssFmt').value, out=document.getElementById('mOut');
+  ld(out,'Gerando '+qtd+' peças... aguarde.');
+  // Pede um por vez para evitar tokens excessivos e garantir qualidade
+  var posts=[];
+  for(var i=1;i<=qtd;i++){
+    try{
+      var p='Crie 1 post completo de '+fmts+' para advogado de '+area+', dia '+i+' de uma sequência de '+qtd+' posts.\nRetorne APENAS JSON PURO (sem texto, sem markdown): {"dia":'+i+',"formato":"Feed","titulo":"...","conteudo":"texto completo do post 200 palavras","hashtags":"#tag1 #tag2 #tag3","horario":"18h"}';
+      var res=await gemini(p,500);
+      var clean=extrairJSON(res);
+      var post=JSON.parse(clean);
+      posts.push(post);
+      // Atualiza progresso
+      out.innerHTML='<div class="ldr"><div class="dots"><span></span><span></span><span></span></div><span>Gerando peça '+i+' de '+qtd+'...</span></div>';
+    } catch(e){ posts.push({dia:i,formato:'Feed',titulo:'Post '+i,conteudo:'Erro ao gerar. Tente regerar.',hashtags:'',horario:'18h'}); }
+  }
+  var fc={Feed:'tf',Reel:'tr',Story:'ts',Carrossel:'tc'};
+  var html='<div style="margin-bottom:14px;font-size:13px;color:var(--grn)">✅ '+posts.length+' peças geradas com sucesso</div><div class="ml-list">';
+  posts.forEach(function(p){
+    var tags=(p.hashtags||'').split(' ').filter(Boolean).map(function(h){return '<span class="ht">'+h+'</span>';}).join('');
+    html+='<div class="mi"><div class="mih"><span class="tag '+(fc[p.formato]||'tf')+'">'+p.formato+'</span><span style="color:var(--muted);font-size:11px">Dia '+p.dia+' · '+(p.horario||'18h')+'</span></div><div class="mit">'+p.titulo+'</div><div class="mib">'+p.conteudo+'</div><div class="ht-cloud">'+tags+'</div></div>';
+  });
+  out.innerHTML=html+'</div>';
+}
+
+// ═══════════════════════════════════════════
+// ANÁLISE MÉTRICAS
+// ═══════════════════════════════════════════
+async function analisarMetricas(){
+  var out=document.getElementById('aOut');
+  ld(out,'Analisando métricas...');
+  var p='Analise as métricas deste perfil de advogado:\nSeguidores: '+(document.getElementById('mSeg').value||'?')+'\nCrescimento/mês: '+(document.getElementById('mCres').value||'?')+'%\nEngajamento: '+(document.getElementById('mEng').value||'?')+'%\nPosts/semana: '+(document.getElementById('mPosts').value||'?')+'\nAlcance médio: '+(document.getElementById('mAlc').value||'?')+'\nÁrea: '+(document.getElementById('mArea').value||'?')+'\n\n## 📊 DIAGNÓSTICO GERAL\nNota 0-10 por métrica com benchmark do setor jurídico\n## 🚨 PONTOS CRÍTICOS\nO que corrigir imediatamente\n## 💡 OPORTUNIDADES\n## 📋 PLANO DE AÇÃO\n**30 dias** / **60 dias** / **90 dias**\n## 🎬 TIPOS DE CONTEÚDO\nOs 5 formatos que mais convertem para este perfil';
+  try {
+    var res=await gemini(p,900);
+    out.innerHTML='<div class="card"><div class="rb">'+fmt(res)+'</div></div>';
+  } catch(e){ out.innerHTML='<div class="card" style="color:var(--red);padding:16px">'+e.message+'</div>'; }
+}
+
+// ═══════════════════════════════════════════
+// ANÁLISE PERFIL SOCIAL
+// ═══════════════════════════════════════════
+var curNet='instagram';
+var nLabels={instagram:'Instagram',facebook:'Facebook',linkedin:'LinkedIn',tiktok:'TikTok',youtube:'YouTube',twitter:'X / Twitter'};
+var nColors={instagram:'#e1306c',facebook:'#1877f2',linkedin:'#0a66c2',tiktok:'#69c9d0',youtube:'#ff0000',twitter:'#222'};
+var nPillars={
+  instagram:['Bio & Identidade','Consistência Visual','Frequência de Posts','Engajamento','Uso de Reels','Hashtags','Stories','CTA & Conversão'],
+  facebook:['Bio & Informações','Frequência','Engajamento','Uso de Vídeo','Grupos','Reviews','Anúncios','CTA'],
+  linkedin:['Perfil Completo','Headline','Publicações','Engajamento','Conexões','Recomendações','Posicionamento','Leads'],
+  tiktok:['Bio & Link','Frequência','Qualidade','Engajamento','Tendências','Duets','Hashtags','Conversão'],
+  youtube:['Canal & Arte','Frequência','SEO & Títulos','Thumbnails','Engajamento','Shorts','Playlists','CTA'],
+  twitter:['Bio','Frequência','Engajamento','Threads','Mídia','Retweets','Listas','Posicionamento'],
+};
+
+function selNet(el){
+  document.querySelectorAll('.ntab').forEach(function(t){t.classList.remove('on')});
+  el.classList.add('on'); curNet=el.getAttribute('data-n');
+  var ph={instagram:'advogadatrabalhista',facebook:'escritoriojuridico',linkedin:'dra-maria-silva',tiktok:'drjoaoadvogado',youtube:'CanalJuridico',twitter:'advogadoBR'};
+  document.getElementById('profH').placeholder=ph[curNet]||'nomeDoPerfil';
+}
+
+async function analisarPerfil(){
+  var handle=document.getElementById('profH').value.trim().replace(/^@/,'');
+  var inp=document.getElementById('profH');
+  if(!handle){ inp.classList.add('err'); inp.focus(); setTimeout(function(){inp.classList.remove('err');},1500); return; }
+  var seg=document.getElementById('pfSeg').value, area=document.getElementById('pfArea').value;
+  var cid=document.getElementById('pfCid').value, net=curNet, nLbl=nLabels[net];
+  var pillars=nPillars[net]||nPillars.instagram, out=document.getElementById('perfilOut');
+  out.innerHTML='<div class="ldr"><div class="dots"><span></span><span></span><span></span></div><span>Lexia auditando @'+handle+' no '+nLbl+'...</span></div>';
+
+  var p='Auditoria profissional do perfil @'+handle+' no '+nLbl+'.\n'
+    +(seg?'Seguidores: '+seg+'\n':'')+(area?'Área: '+area+'\n':'')+(cid?'Cidade: '+cid+'\n':'')
+    +'Baseie-se no handle para inferir posicionamento e área.\n'
+    +'Retorne APENAS JSON puro sem nenhum texto antes ou depois:\n'
+    +'{"handle":"@'+handle+'","rede":"'+nLbl+'","nota_geral":72,"classificacao":"Perfil em Desenvolvimento",'
+    +'"resumo_executivo":"resumo 2-3 linhas",'
+    +'"pillars":['+pillars.map(function(p_){return '{"nome":"'+p_+'","nota":70,"diag":"análise específica deste pilar"}';}).join(',')+'],'
+    +'"fortes":["ponto 1","ponto 2","ponto 3"],'
+    +'"criticos":["critica 1","critica 2","critica 3"],'
+    +'"oportunidades":["op 1","op 2","op 3"],'
+    +'"plano":{"semana":"acoes imediatas","m30":"acoes 30 dias","m90":"acoes 90 dias"},'
+    +'"conteudos":["tipo 1","tipo 2","tipo 3","tipo 4","tipo 5"],'
+    +'"benchmark":"comparação com perfis jurídicos de sucesso",'
+    +'"potencial":"estimativa crescimento 6 meses"}';
+
+  try {
+    var res=await gemini(p,900);
+    var data;
+    try { data=JSON.parse(extrairJSON(res)); }
+    catch(_){ out.innerHTML='<div class="card"><div class="rb">'+fmt(res)+'</div></div>'; return; }
+    renderPerfil(data,net,handle);
+  } catch(e){ out.innerHTML='<div class="card" style="color:var(--red);padding:16px">'+e.message+'</div>'; }
+}
+
+function renderPerfil(d,net,handle){
+  var out=document.getElementById('perfilOut');
+  var nota=d.nota_geral||0, cor=scolor(nota), nClr=nColors[net]||'var(--gold)';
+  var circ=2*Math.PI*52, dash=circ-(nota/100)*circ;
+
+  var pillH=(d.pillars||[]).map(function(p){
+    return '<div class="pr"><div class="ph2"><span class="pn">'+p.nome+'</span><span class="ps">'+p.nota+'/100</span></div>'
+      +'<div class="pbar"><div class="pfill" style="width:'+p.nota+'%;background:'+scolor(p.nota)+'"></div></div>'
+      +'<div style="font-size:11px;color:var(--muted);margin-top:3px">'+(p.diag||p.diagnostico||'')+'</div></div>';
+  }).join('');
+
+  function lst(arr,c){ return (arr||[]).map(function(x,i){ return '<div style="display:flex;gap:8px;margin-bottom:8px"><span style="color:'+c+';font-weight:700;flex-shrink:0">'+(i+1)+'.</span><span style="font-size:13px;color:var(--plat);line-height:1.5">'+x+'</span></div>'; }).join(''); }
+
+  var pl=d.plano||{};
+  var blocks=[
+    {id:'b0',ico:'💪',t:'Pontos Fortes',        body:lst(d.fortes,'var(--grn)'),   open:true},
+    {id:'b1',ico:'🚨',t:'Pontos Críticos',      body:lst(d.criticos,'var(--red)'), open:false},
+    {id:'b2',ico:'💡',t:'Oportunidades',        body:lst(d.oportunidades,'var(--gold)'),open:false},
+    {id:'b3',ico:'📋',t:'Plano de Ação',
+     body:'<div style="margin-bottom:12px"><div style="font-size:10px;color:var(--grn);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px">⚡ Esta Semana</div><div style="font-size:13px;color:var(--plat);line-height:1.6">'+(pl.semana||'')+'</div></div>'
+         +'<div style="margin-bottom:12px"><div style="font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px">📅 30 Dias</div><div style="font-size:13px;color:var(--plat);line-height:1.6">'+(pl.m30||'')+'</div></div>'
+         +'<div><div style="font-size:10px;color:var(--acc2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px">🎯 90 Dias</div><div style="font-size:13px;color:var(--plat);line-height:1.6">'+(pl.m90||'')+'</div></div>',
+     open:false},
+    {id:'b4',ico:'🎬',t:'Conteúdo Recomendado', body:lst(d.conteudos,'var(--acc2)'),open:false},
+    {id:'b5',ico:'📊',t:'Benchmark & Potencial',
+     body:'<div style="margin-bottom:12px"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px">Benchmark</div><div style="font-size:13px;color:var(--plat);line-height:1.6">'+(d.benchmark||'')+'</div></div>'
+         +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px">Potencial 6 meses</div><div style="font-size:13px;color:var(--plat);line-height:1.6">'+(d.potencial||'')+'</div></div>',
+     open:false},
+  ];
+
+  var blH=blocks.map(function(b){
+    return '<div class="ab'+(b.open?' open':'')+('" id="'+b.id+'">'
+      +'<div class="abh" onclick="tgBlock(\''+b.id+'\')"><span class="abico">'+b.ico+'</span><span class="abt">'+b.t+'</span><span class="aba">▼</span></div>'
+      +'<div class="abb">'+b.body+'</div></div>';
+  }).join('');
+
+  out.innerHTML=
+    '<div class="card" style="margin-bottom:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">'
+    +'<div style="width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,'+nClr+',var(--gold));display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">⚖️</div>'
+    +'<div style="flex:1;min-width:160px">'
+    +'<div style="font-family:var(--fs);font-size:17px;color:var(--plat)">'+(d.handle||'@'+handle)+'</div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:2px">'+(d.rede||nLabels[net])+' · '+(d.classificacao||'')+'</div>'
+    +'<div style="font-size:12.5px;color:var(--plat);margin-top:7px;line-height:1.5">'+(d.resumo_executivo||d.resumo||'')+'</div></div>'
+    +'<div style="display:flex;gap:8px;flex-shrink:0">'
+    +'<button class="btn btn-o" style="font-size:11px" onclick="analisarPerfil()">🔄 Re-analisar</button>'
+    +'<button class="btn btn-g" style="font-size:11px" onclick="exportarAnalise()">📄 Exportar</button></div></div>'
+
+    +'<div class="ssec">'
+    +'<div class="srw"><div class="sring">'
+    +'<svg viewBox="0 0 120 120"><circle class="rbg" cx="60" cy="60" r="52"/>'
+    +'<circle class="rfil" cx="60" cy="60" r="52" stroke="'+cor+'" stroke-dasharray="'+circ+'" stroke-dashoffset="'+circ+'" id="rfil"/></svg>'
+    +'<div class="rtxt"><div class="snum" id="snum">0</div><div class="slbl">/ 100</div></div></div>'
+    +'<div class="slabel">'+(d.classificacao||'')+'</div>'
+    +'<div class="sbadge">'+slabel(nota)+'</div></div>'
+    +'<div class="spill"><div style="font-family:var(--fs);font-size:13px;color:var(--plat);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bdr)">Análise por Pilar</div>'+pillH+'</div>'
+    +'</div>'
+    +'<div class="ablocks">'+blH+'</div>';
+
+  setTimeout(function(){
+    var r=document.getElementById('rfil'), n=document.getElementById('snum');
+    if(r) r.style.strokeDashoffset=dash;
+    var cur=0,step=Math.max(1,Math.ceil(nota/40));
+    var t=setInterval(function(){ cur=Math.min(cur+step,nota); if(n) n.textContent=cur; if(cur>=nota) clearInterval(t); },28);
+  },100);
+}
+function tgBlock(id){ var b=document.getElementById(id); if(b) b.classList.toggle('open'); }
+function exportarAnalise(){
+  var h=document.getElementById('profH').value||'perfil';
+  var c=document.getElementById('perfilOut').innerText;
+  var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([c],{type:'text/plain;charset=utf-8'}));
+  a.download='auditoria-'+h+'.txt'; a.click();
+}
+
+// ═══════════════════════════════════════════
+// ESTRATÉGIA
+// ═══════════════════════════════════════════
+async function gerarEstrategia(tipo){
+  var perfil=document.getElementById('ePerfil').value, out=document.getElementById('eOut');
+  var tt={crescimento:'Crescimento de Seguidores',engajamento:'Engajamento',autoridade:'Posicionamento como Referência',captacao:'Captação de Clientes'};
+  ld(out,'Criando estratégia...');
+  var p='Estratégia COMPLETA e PRÁTICA de '+tt[tipo]+' para: '+(perfil||'advogado iniciante nas redes')+'\n\n## 🎯 DIAGNÓSTICO INICIAL\n## 📅 PASSO A PASSO SEMANAL\n(semana 1, 2, 3, 4)\n## 🎬 TIPOS DE CONTEÚDO COM EXEMPLOS REAIS\n## 📊 MÉTRICAS A ACOMPANHAR\n## ❌ ERROS COMUNS DE ADVOGADOS\n## ✍️ 5 TÍTULOS DE POST PRONTOS\n## 🗓 CRONOGRAMA';
+  try {
+    var res=await gemini(p,900);
+    out.innerHTML='<div class="card" style="margin-top:20px"><div class="ctitle">'+tt[tipo]+'</div><div class="rb">'+fmt(res)+'</div></div>';
+  } catch(e){ out.innerHTML='<div class="card" style="color:var(--red);padding:16px">'+e.message+'</div>'; }
+}
+
+// ═══════════════════════════════════════════
+// PÚBLICO
+// ═══════════════════════════════════════════
+async function analisarPublico(){
+  var area=document.getElementById('pArea').value, cid=document.getElementById('pCid').value, out=document.getElementById('pOut');
+  ld(out,'Mapeando público-alvo...');
+  var p='Análise COMPLETA de público-alvo para advogado de '+area+' em '+(cid||'todo o Brasil')+'.\n## 👤 3 PERSONAS\n(nome, idade, profissão, situação, dores, medos, desejos)\n## 📱 COMPORTAMENTO DIGITAL\n## 🗣 LINGUAGEM E TERMOS\n## 💔 DORES E MEDOS JURÍDICOS\n## 🎯 COMO ALCANÇAR\n(Instagram, LinkedIn, TikTok)\n## ✍️ TÍTULOS DE POST POR PERSONA';
+  try {
+    var res=await gemini(p,900);
+    out.innerHTML='<div class="card"><div class="rb">'+fmt(res)+'</div></div>';
+  } catch(e){ out.innerHTML='<div class="card" style="color:var(--red);padding:16px">'+e.message+'</div>'; }
+}
+
+// ═══════════════════════════════════════════
+// SOCIAL SELLING
+// ═══════════════════════════════════════════
+async function gerarSelling(){
+  var ctx=document.getElementById('ssCtx').value, out=document.getElementById('ssOut');
+  ld(out,'Criando estratégia de social selling...');
+  var p='Plano COMPLETO de Social Selling jurídico para: '+(ctx||'advogado nas redes sociais')+'\n## 💡 O QUE É SOCIAL SELLING JURÍDICO\n## 📱 TÉCNICAS PARA INSTAGRAM E LINKEDIN\n## 💬 3 SCRIPTS DE DM PRONTOS\n## 🗣 SCRIPTS DE COMENTÁRIOS\n## 🎬 STORIES E REELS PARA GERAR CONSULTAS\n## 📊 MÉTRICAS\n## ❌ O QUE NUNCA FAZER (Código OAB)';
+  try {
+    var res=await gemini(p,900);
+    out.innerHTML='<div class="card"><div class="rb">'+fmt(res)+'</div></div>';
+  } catch(e){ out.innerHTML='<div class="card" style="color:var(--red);padding:16px">'+e.message+'</div>'; }
+}
+
+// ═══════════════════════════════════════════
+// NOTÍCIAS
+// ═══════════════════════════════════════════
+async function buscarNoticias(){
+  var area=document.getElementById('newsArea').value, out=document.getElementById('newsOut');
+  ld(out,'Buscando tendências jurídicas...');
+  var p='Para a área de '+area+':\n## 📰 5 TEMAS QUENTES DO MOMENTO\n(por que é relevante, o que o público leigo precisa saber)\n## 💡 COMO TRANSFORMAR EM CONTEÚDO\n(formato, título irresistível, ângulo engajador para cada tema)\n## 🔥 TEMA VIRAL DA SEMANA\n(roteiro rápido de Reel 60s pronto para gravar)\n## 🗓 PRÓXIMAS DATAS IMPORTANTES DA ÁREA';
+  try {
+    var res=await gemini(p,900);
+    out.innerHTML='<div class="card"><div class="rb">'+fmt(res)+'</div></div>';
+  } catch(e){ out.innerHTML='<div class="card" style="color:var(--red);padding:16px">'+e.message+'</div>'; }
+}
+
+// ═══════════════════════════════════════════
+// CALENDÁRIO
+// ═══════════════════════════════════════════
+async function gerarCalendario(){
+  var area=document.getElementById('cArea').value, per=document.getElementById('cPer').value;
+  var freq=document.getElementById('cFreq').value, out=document.getElementById('cOut');
+  ld(out,'Gerando calendário...');
+  var p='Calendário editorial de '+per+' dias para advogado de '+area+', publicando '+freq+'.\nRetorne SOMENTE JSON puro sem texto fora:\n[{"dia":1,"diaSem":"Seg","formato":"Feed","tema":"breve descrição","titulo":"titulo do post","objetivo":"Educar","horario":"19h"}]';
+  try {
+    var res=await gemini(p,900);
+    var cal;
+    try { cal=JSON.parse(extrairJSON(res)); } catch(_){ out.innerHTML='<div class="card"><div class="rb">'+fmt(res)+'</div></div>'; return; }
+    var fc={Feed:'tf',Reel:'tr',Story:'ts',Carrossel:'tc'};
+    var oc={Educar:'var(--acc2)',Engajar:'var(--gold)',Converter:'var(--grn)',Relacionamento:'#e74c3c'};
+    var rows=cal.map(function(p_){
+      return '<tr><td style="font-family:var(--fm);color:var(--muted)">'+p_.dia+'</td><td style="color:var(--plat)">'+p_.diaSem+'</td>'
+        +'<td><span class="tag '+(fc[p_.formato]||'tf')+'">'+p_.formato+'</span></td>'
+        +'<td><div style="font-size:12.5px;color:var(--plat)">'+p_.titulo+'</div><div style="font-size:11px;color:var(--muted);margin-top:2px">'+p_.tema+'</div></td>'
+        +'<td style="color:'+(oc[p_.objetivo]||'var(--muted)')+';font-size:11px">'+p_.objetivo+'</td>'
+        +'<td style="font-family:var(--fm);font-size:11px;color:var(--muted)">'+p_.horario+'</td></tr>';
+    }).join('');
+    out.innerHTML='<div class="card"><div class="ctitle">Calendário '+per+' dias — '+area+' <span class="badge">'+cal.length+' posts</span></div><div style="overflow-x:auto"><table class="ctbl"><thead><tr><th>Dia</th><th>Sem.</th><th>Formato</th><th>Conteúdo</th><th>Objetivo</th><th>Horário</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+  } catch(e){ out.innerHTML='<div class="card" style="color:var(--red);padding:16px">'+e.message+'</div>'; }
+}
+
+// ═══════════════════════════════════════════
+// LEXIA CHAT
+// ═══════════════════════════════════════════
+function toggleLexia(){
+  lexOpen=!lexOpen;
+  document.getElementById('lpanel').classList.toggle('open',lexOpen);
+  document.querySelector('#lbtn .lnotif').style.display='none';
+  if(lexOpen&&!lexHist.length){
+    addMsg('ai','**Olá! Sou a Lexia** 👩‍⚖️\n\nSua publicitária jurídica de elite. Crio estratégias, conteúdos e soluções de marketing de alto impacto para o seu escritório.\n\nO que posso fazer por você?');
+  }
+  if(lexOpen) setTimeout(function(){ var m=document.getElementById('lmsgs'); m.scrollTop=m.scrollHeight; document.getElementById('linp').focus(); },120);
+}
+
+function addMsg(role,text){
+  var msgs=document.getElementById('lmsgs');
+  var div=document.createElement('div'); div.className='msg '+(role==='ai'?'ai':'u');
+  var html=text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  div.innerHTML='<div class="mav">'+(role==='ai'?'👩‍⚖️':'👤')+'</div><div class="mb">'+html+'</div>';
+  msgs.appendChild(div); msgs.scrollTop=msgs.scrollHeight;
+}
+
+function addMsgLoading(){
+  var msgs=document.getElementById('lmsgs');
+  var div=document.createElement('div'); div.className='msg ai'; div.id='lload';
+  div.innerHTML='<div class="mav">👩‍⚖️</div><div class="mb"><div class="dots"><span></span><span></span><span></span></div></div>';
+  msgs.appendChild(div); msgs.scrollTop=msgs.scrollHeight;
+}
+
+async function sendLexia(){
+  var inp=document.getElementById('linp'), text=inp.value.trim();
+  if(!text) return;
+  inp.value=''; inp.style.height='auto';
+  await askLexia(text);
+}
+
+async function askLexia(text){
+  addMsg('user',text);
+  lexHist.push({role:'user',text:text});
+  addMsgLoading();
+  var btn=document.getElementById('lsendBtn'); if(btn) btn.disabled=true;
+  try {
+    if(!KEY) throw new Error('Configure sua chave gratuita do Google Gemini primeiro (botão na sidebar).');
+    var reply=await geminiChat(lexHist.slice(-10));
+    var ld_=document.getElementById('lload'); if(ld_) ld_.remove();
+    addMsg('ai',reply);
+    lexHist.push({role:'model',text:reply});
+  } catch(e){
+    var ld_=document.getElementById('lload'); if(ld_) ld_.remove();
+    addMsg('ai','⚠️ '+e.message);
+  }
+  if(btn) btn.disabled=false;
+}
+
+document.getElementById('linp').addEventListener('input',function(){
+  this.style.height='auto'; this.style.height=Math.min(this.scrollHeight,100)+'px';
+});
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+initDash();
+</script>
+</body>
+</html>
